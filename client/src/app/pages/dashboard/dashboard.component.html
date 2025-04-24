@@ -10,6 +10,32 @@
         <div class="time">{{ currentTime }}</div>
         <div class="date">{{ currentDate }}</div>
       </div>
+    </div>   
+    <div class="card-container">
+        <app-starcard
+        *ngFor="let stat of stats"
+        [title]="stat.title"
+        [value]="stat.value"
+        [description]="stat.description"
+        [logo]="stat.logo"
+        [sidebarVisible]="sidebarVisible">
+      </app-starcard>
+      
     </div>
+    <div class="sub-nav">
+        <button (click)="changeTab('activity')" [class.active]="selectedTab === 'activity'">Activity</button>
+        <button (click)="changeTab('submissions')" [class.active]="selectedTab === 'submissions'">Submissions</button>
+        <button (click)="changeTab('progress')" [class.active]="selectedTab === 'progress'">Progress</button>
+        <button (click)="changeTab('grading')" [class.active]="selectedTab === 'grading'">Grading</button>
+      </div>
+    
+      <!-- Tab Content -->
+      <div class="tab-content">
+        <app-activity *ngIf="selectedTab === 'activity'"></app-activity>
+        <app-submissions *ngIf="selectedTab === 'submissions'"></app-submissions>
+        <app-progress *ngIf="selectedTab === 'progress'"></app-progress>
+        <app-grading *ngIf="selectedTab === 'grading'"></app-grading>
+
+      </div>
   </div>
   

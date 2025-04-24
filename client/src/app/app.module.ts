@@ -7,6 +7,13 @@ import { MainLayoutComponent } from './layout/main-layout/main-layout.component'
 import { NavbarComponent } from './shared/navbar/navbar.component';
 import { SidebarComponent } from './shared/sidebar/sidebar.component';
 import { DashboardComponent } from './pages/dashboard/dashboard.component';
+import { AssignmentcardComponent } from './components/assignmentcard/assignmentcard.component';
+import { StarcardComponent } from './components/starcard/starcard.component';
+import { LucideAngularModule, BookOpenText, GitCommit, Calendar, GraduationCap } from 'lucide-angular';
+import { ActivityComponent } from './components/activity/activity.component';
+import { SubmissionsComponent } from './components/submissions/submissions.component';
+import { ProgressComponent } from './components/progress/progress.component';
+import { GradingComponent } from './components/grading/grading.component';
 
 @NgModule({
   declarations: [
@@ -14,11 +21,23 @@ import { DashboardComponent } from './pages/dashboard/dashboard.component';
     MainLayoutComponent,
     NavbarComponent,
     SidebarComponent,
-    DashboardComponent
+    DashboardComponent,
+    AssignmentcardComponent,
+    StarcardComponent,
+    ActivityComponent,
+    SubmissionsComponent,
+    ProgressComponent,
+    GradingComponent,
   ],
   imports: [
     BrowserModule,
-    AppRoutingModule
+    AppRoutingModule,
+    LucideAngularModule.pick({ 
+      BookOpenText, 
+      GitCommit, 
+      Calendar, 
+      GraduationCap 
+    })
   ],
   providers: [],
   bootstrap: [AppComponent]

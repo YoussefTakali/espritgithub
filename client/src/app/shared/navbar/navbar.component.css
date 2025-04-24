@@ -8,8 +8,11 @@
   }
   .n-infos {
     position: relative;
+    right: 2rem;
   }
   .n-logo {
+    position: relative;
+    top: 5px;
     height: 35px;
     cursor: pointer;
   }
