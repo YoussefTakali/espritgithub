@@ -20,10 +20,9 @@
         [logo]="stat.logo"
         [sidebarVisible]="sidebarVisible">
       </app-starcard>
-      
     </div>
     <div class="sub-nav">
-        <button (click)="changeTab('activity')" [class.active]="selectedTab === 'activity'">Activity</button>
+        <button (click)="changeTab('activity')" [class.active]="selectedTab === 'activity'">Assignment</button>
         <button (click)="changeTab('submissions')" [class.active]="selectedTab === 'submissions'">Submissions</button>
         <button (click)="changeTab('progress')" [class.active]="selectedTab === 'progress'">Progress</button>
         <button (click)="changeTab('grading')" [class.active]="selectedTab === 'grading'">Grading</button>

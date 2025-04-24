@@ -74,10 +74,7 @@
     left: 2.5%;
     display: flex;
     gap: 0rem;
-    margin-top: 1.5rem;
     border-bottom: 1px solid #e5e7eb;
-    padding-bottom: 0.2rem;
-    padding-top: 0.2rem;
     width: 600px;
     height: 55px;
     align-items: center;
@@ -106,4 +103,8 @@
     font-weight: bold;
     color: #111827;
   }
+  .tab-content {
+position: relative; 
+top: 100px;
+}
   

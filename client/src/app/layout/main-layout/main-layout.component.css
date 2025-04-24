@@ -1,7 +1,9 @@
 .content {
+    position: relative;
     transition: margin-left 0.3s ease;
     min-height: 92.808vh;
-    z-index: 1000;
+    z-index: 1;
+    top: 4rem;
   }
   
   .content.sidebar-open {

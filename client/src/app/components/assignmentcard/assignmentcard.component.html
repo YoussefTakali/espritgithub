@@ -1,8 +1,29 @@
-<div class="bg-white p-4 rounded-lg shadow-md">
-    <h3 class="text-xl font-semibold">{{ title }}</h3>
-    <p class="text-sm">{{ description }}</p>
-    <p class="text-sm">Due: {{ dueDate }}</p>
-    <p class="text-sm">Course: {{ course }}</p>
-    <p class="text-sm">Submission Rate: {{ submissionRate }}%</p>
-    <p *ngIf="aiAssisted">AI Assisted: Yes</p>
+<div class="assignment-card" [ngClass]="{ 'sidebar-open': sidebarVisible, 'sidebar-closed': !sidebarVisible }">
+    <div class="card-header">
+      <h3 class="title">{{ title }}</h3>
+      <span class="ai-badge" *ngIf="aiAssisted">AI Assisted</span>
+    </div>
+  
+    <p class="description">
+      {{ description }}
+    </p>
+  
+    <div class="submission-info">
+      <span class="label">Submission Rate</span>
+      <span class="rate">{{ submissionRate }}%</span>
+    </div>
+  
+    <div class="progress-bar">
+      <div class="fill" [style.width.%]="submissionRate"></div>
+    </div>
+  
+    <div class="footer">
+      <span class="course">
+        <i class="icon">📘</i> {{ courseCode }}
+      </span>
+      <span class="due">
+        <i class="icon">📅</i> Due: {{ dueDate }}
+      </span>
+    </div>
   </div>
+  
