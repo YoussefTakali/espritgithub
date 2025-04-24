@@ -1,0 +1,8 @@
+<div>
+    <app-navbar (sidebarToggled)="onSidebarToggle($event)"></app-navbar>
+    <app-sidebar [isSidebarVisible]="isSidebarVisible"></app-sidebar>
+    <div class="content" [class.sidebar-open]="isSidebarVisible">
+      <router-outlet></router-outlet>
+    </div>
+  </div>
+  
