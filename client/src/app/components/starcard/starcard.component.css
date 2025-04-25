@@ -11,10 +11,10 @@
   }
   
   .logo {
-    height: 50px;
-    width: 50px;
+    height: 45px;
+    width: 45px;
     position: absolute;
-    top: 1rem;
+    top: 1.5rem;
     right: 2rem;
     object-fit: contain;
     border-radius: 0.375rem;
