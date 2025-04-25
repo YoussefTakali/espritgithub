@@ -47,6 +47,7 @@ export class DashboardComponent implements OnInit {
       minute: '2-digit'
     });
   }
+  searchQuery: string = '';
 
   changeTab(tab: string): void {
     this.selectedTab = tab;

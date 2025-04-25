@@ -1,6 +1,7 @@
 .assignment-card {
     width: 31vw;
     background: white;
+    border: 1px solid rgb(255, 255, 255);
     border-radius: 0.75rem;
     padding: 2rem;
     box-shadow: 0 0 6px rgba(0, 0, 0, 0.1);
