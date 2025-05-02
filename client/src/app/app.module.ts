@@ -1,4 +1,5 @@
 import { APP_INITIALIZER, NgModule } from '@angular/core';
+
 import { BrowserModule } from '@angular/platform-browser';
 
 import { AppRoutingModule } from './app-routing.module';
@@ -14,8 +15,10 @@ import { ActivityComponent } from './components/activity/activity.component';
 import { SubmissionsComponent } from './components/submissions/submissions.component';
 import { ProgressComponent } from './components/progress/progress.component';
 import { GradingComponent } from './components/grading/grading.component';
+
 import { initializeKeycloak } from './keycloak/app.init';
 import { KeycloakAngularModule, KeycloakService } from 'keycloak-angular';
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -35,6 +38,8 @@ import { KeycloakAngularModule, KeycloakService } from 'keycloak-angular';
     KeycloakAngularModule,
     AppRoutingModule,
 
+
+    AppRoutingModule,
     LucideAngularModule.pick({ 
       BookOpenText, 
       GitCommit, 
@@ -51,6 +56,7 @@ import { KeycloakAngularModule, KeycloakService } from 'keycloak-angular';
     }
   ],
   
+
   bootstrap: [AppComponent]
 })
 export class AppModule { }

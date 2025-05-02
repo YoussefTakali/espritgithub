@@ -1,4 +1,5 @@
 import { Component, EventEmitter, Output } from '@angular/core';
+
 import { KeycloakService } from 'keycloak-angular';
 
 @Component({
@@ -8,6 +9,7 @@ import { KeycloakService } from 'keycloak-angular';
 })
 export class NavbarComponent {
   constructor(private keycloakService: KeycloakService) {}
+
 
   isSidebarVisible = false;
 
@@ -27,5 +29,6 @@ export class NavbarComponent {
   logout(): void {
     this.keycloakService.logout(window.location.origin);
   }
+
 }
   

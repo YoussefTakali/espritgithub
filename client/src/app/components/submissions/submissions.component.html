@@ -1,0 +1,37 @@
+<div class="submissions-container border-2 border-neutral-200 rounded-lg p-8 max-w-[95vw] mx-auto font-[Segoe UI]" [ngClass]="{ 'sidebarvisible': sidebarVisible, 'sidebarnotvisible': !sidebarVisible }">
+    <h2 class="text-[35px] mb-1 font-[Geist], 'Segoe UI', sans-serif">Recent Submissions</h2>
+    <p class="subtext">Student work submitted in the past week</p>
+  
+    <div class="submission" *ngFor="let item of submissions">
+      <img [src]="'assets/logos/' + item.type + '.png'" alt="{{ item.type }} logo" class="submission-logo" />
+  
+      <div class="details">
+        <div class="title">{{ item.title }}</div>
+        <div class="subtitle">{{ item.description }}</div>
+  
+        <div class="info flex items-center gap-2 mt-1">
+          <img 
+            [src]="'assets/' + item.authorpp" 
+            alt="{{ item.author }}" 
+            class="profile-pic"
+          />
+          <span class="author">{{ item.author }}</span> · 
+          <span class="time">{{ item.time }}</span>
+        </div>
+      </div>
+  
+      <div 
+      *ngIf="item.grade" 
+      class="grade-btn"
+      [ngClass]="{
+        'a-grade': item.grade.startsWith('A'),
+        'b-grade': item.grade.startsWith('B'),
+        'c-grade': item.grade.startsWith('C'),
+        'd-grade': item.grade.startsWith('D') || item.grade.startsWith('F')
+      }"
+    >
+      Grade: {{ item.grade }}
+    </div>
+    </div>
+  </div>
+  
