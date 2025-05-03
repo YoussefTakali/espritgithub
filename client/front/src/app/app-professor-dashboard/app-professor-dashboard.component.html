@@ -1,0 +1,51 @@
+<!-- HEADER -->
+<header class="top-header">
+    <div class="profile-section">
+      <img src="assets/professor.jpg" alt="profile" />
+      <div class="name">Dr. Youssef Takali</div>
+    </div>
+  
+    <div class="center-section">
+      <span class="dashboard-title">Academic Git Dashboard</span>
+    </div>
+  
+    <div class="right-section">
+      <div class="time">{{ today | date:'shortTime' }}</div>
+      <div class="date">{{ today | date:'fullDate' }}</div>
+    </div>
+  </header>
+  
+  <!-- SIDEBAR AND CONTENT -->
+  <div class="main-content">
+    <!-- Sidebar -->
+    <nav class="sidebar" [class.collapsed]="collapsed">
+      <button (click)="toggleSidebar()">☰</button>
+      <ul>
+        <li (click)="showCreateRepo = true">➕ Create Repo</li>
+        <li>📄 View Repos</li>
+        <li>📊 Activity Logs</li>
+      </ul>
+    </nav>
+  
+    <!-- Dynamic Content -->
+    <section class="content-area">
+      <!-- Only show repo section -->
+      <div *ngIf="showCreateRepo" class="repo-form">
+        <h2>Create Repositories for Groups</h2>
+        <form (submit)="createRepos()">
+          <label>Select Project</label>
+          <select [(ngModel)]="selectedProjectId" name="project">
+            <option *ngFor="let p of projects" [value]="p.id">{{ p.name }}</option>
+          </select>
+  
+          <label>Select Group</label>
+          <select [(ngModel)]="selectedGroupId" name="group">
+            <option *ngFor="let g of groups" [value]="g.id">{{ g.name }}</option>
+          </select>
+  
+          <button type="submit">Create Repo</button>
+        </form>
+      </div>
+    </section>
+  </div>
+  
