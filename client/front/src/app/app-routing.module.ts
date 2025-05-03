@@ -11,13 +11,11 @@ const routes: Routes = [
     component: MainLayoutComponent,
     children: [
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
-      {
-        path: 'dashboard',
-        component: DashboardComponent,
-        children: [
-          { path: 'create_repo', component: RepoFormComponent }
-        ]
-      }
+      {path: 'dashboard',component: DashboardComponent},
+       
+    { path: 'create_repo', component: RepoFormComponent }
+        
+      
     ]
   }
 ];

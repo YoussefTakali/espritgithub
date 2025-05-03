@@ -32,7 +32,7 @@
         <div class="nav-plus-menu" (click)="toggleDropdown()" style="position: relative;">
           <button class="plus-btn">+</button>
           <ul class="dropdown" *ngIf="dropdownOpen">
-            <li><a routerLink="/dashboard/create_repo">➕ New Repository</a></li>
+            <li><a routerLink="create_repo">➕ New Repository</a></li>
             <li><a href="#">📥 Import Repository</a></li>
            <!-- <li><a href="#">💻 New Codespace</a></li>
             <li><a href="#">📝 New Gist</a></li>
@@ -50,17 +50,7 @@
             <div class="n-dropdown-menu-item"><a class="n-link" href="#">Logout</a></div>
           </div>
         </div>
-    <!-- Minimal toggle switch -->
-<button (click)="toggleDarkMode()" class="dark-mode-toggle">
-  <span *ngIf="isDarkMode; else light">
-    <!-- Moon & stars icon for dark mode -->
-    🌙
-  </span>
-  <ng-template #light>
-    <!-- Sun icon for light mode -->
-    ☀️
-  </ng-template>
-</button>
+  
         
       </div>
       

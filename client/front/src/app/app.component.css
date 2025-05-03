@@ -1,14 +1,1 @@
-/* Dark mode styles */
-body.dark-mode {
-    background: #181818 !important;
-    color: #fff !important;
-  }
-  
-  /* Toggle button styles */
-  .dark-mode-toggle {
-    background: none;
-    border: none;
-    font-size: 2rem;
-    cursor: pointer;
-    outline: none;
-  }
+*{font-family: "Urbanist", sans-serif;}
