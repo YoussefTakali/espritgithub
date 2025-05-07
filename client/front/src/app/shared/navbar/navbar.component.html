@@ -12,7 +12,18 @@
             <path class="line" d="M7 16 27 16"></path>
           </svg>
         </label>
-        <img src="assets/logo.png" alt="Logo" class="n-logo" />
+        <div style="display: flex; align-items: center;">
+          <img src="assets/logo.png" alt="Logo" class="n-logo" />
+          <div *ngIf="showRepoPath()" class="repo-path" style="margin-left: 1.5rem;">
+            {{ repoOwner }} / <b>{{ repoName }}</b>
+
+          </div>
+          <div *ngIf="router.url === '/create_repo'" class="repo-path" style="margin-left: 1.5rem;">
+            New Repository
+            
+          </div>
+        </div>
+        
       </div>
   
       <div class="n-functionalities" style="display: flex; align-items: center; gap: 1rem;">
@@ -29,7 +40,8 @@
         </div>
       
         <!-- ➕ Plus dropdown button FIXED -->
-        <div class="nav-plus-menu" (click)="toggleDropdown()" style="position: relative;">
+        <div class="nav-plus-menu" (click)="toggleDropdown()" style="position: relative;" *ngIf="router.url !== '/create_repo'">
+
           <button class="plus-btn">+</button>
           <ul class="dropdown" *ngIf="dropdownOpen">
             <li><a routerLink="create_repo">➕ New Repository</a></li>

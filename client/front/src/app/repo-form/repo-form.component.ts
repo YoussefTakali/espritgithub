@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
-
+import { Router } from '@angular/router';
+import { HttpClient } from '@angular/common/http';
 @Component({
   selector: 'app-repo-form',
   templateUrl: './repo-form.component.html',
@@ -7,23 +8,30 @@ import { Component } from '@angular/core';
 })
 export class RepoFormComponent {
   user = {
-    username: 'maramouselati', // Replace with actual username from your auth/user service
+    username: 'maramoueslati', // Replace with actual username from your auth/user service
     avatarUrl: 'https://avatars.githubusercontent.com/u/000000?v=4' // Replace with actual avatar URL
   };
 
   repo = {
     name: '',
     description: '',
-    visibility: 'public',
-    readme: false
+    visibility: '',
+    auto_init: false,
+    gitignore_template: ''    // for .gitignore
+   
   };
+  constructor(private router: Router , private http: HttpClient) {}
 
   onSubmit() {
-    // Handle form submission
-    console.log('Repository created:', {
-      ...this.repo,
-      owner: this.user.username
+    console.log(this.repo.visibility);
+    this.http.post('/api/github/create-repo', {
+      name: this.repo.name,
+      description: this.repo.description,
+      isPrivate: this.repo.visibility === 'private' ,
+      auto_init: this.repo.auto_init, // send as boolean
+      gitignore_template: this.repo.gitignore_template ? 'Node' : null // or let user pick template
+    }).subscribe((response: any) => {
+      this.router.navigate(['/repo', this.user.username, this.repo.name]);
     });
   }
-
 }

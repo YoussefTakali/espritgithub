@@ -1,0 +1,102 @@
+.collab-page-wrapper {
+    min-height: 90vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #fff;
+  }
+  
+  .collab-container {
+    width: 500px;
+    padding: 2.5rem 2rem;
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 4px 24px rgba(255,0,0,0.10), 0 1.5px 8px rgba(0,0,0,0.08);
+    border: 2px solid #e53935;
+    text-align: center;
+  }
+  
+  h2 {
+    color: #e53935;
+    margin-bottom: 2rem;
+  }
+  
+  .repo-name {
+    color: #b71c1c;
+    font-weight: 700;
+  }
+  
+  .collab-form {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    margin-bottom: 2rem;
+  }
+  
+  .collab-input {
+    flex: 1;
+    padding: 0.75rem;
+    border: 2px solid #e53935;
+    border-radius: 6px;
+    font-size: 1.1rem;
+  }
+  
+  .collab-btn {
+    background: #e53935;
+    color: #fff;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  
+  .collab-btn[disabled] {
+    background: #ffcdd2;
+    cursor: not-allowed;
+  }
+  
+  .collab-list {
+    text-align: left;
+    margin-top: 2rem;
+  }
+  
+  .collab-list h3 {
+    color: #e53935;
+    margin-bottom: 1rem;
+  }
+  
+  .collab-list ul {
+    list-style: none;
+    padding: 0;
+  }
+  
+  .collab-list li {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid #ffeaea;
+  }
+  
+  .collab-user {
+    font-weight: 500;
+    color: #b71c1c;
+  }
+  
+  .remove-btn {
+    background: none;
+    border: none;
+    color: #e53935;
+    font-weight: bold;
+    cursor: pointer;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    transition: background 0.2s;
+  }
+  
+  .remove-btn:hover {
+    background: #ffeaea;
+  }

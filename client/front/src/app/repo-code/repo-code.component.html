@@ -1,0 +1,13 @@
+<div class="invite-collab-block">
+    <h3>Add collaborators to this repository</h3>
+    <p>Search for people using their username or email address.</p>
+    <button (click)="goToAccessControl()">Invite collaborators</button>
+  </div>
+
+  <div *ngIf="repo.auto_init || repo.gitignore_template">
+    <h3>Repository initialized with:</h3>
+    <ul>
+      <li *ngIf="repo.auto_init">README file</li>
+      <li *ngIf="repo.gitignore_template">.gitignore ({{ repo.gitignore_template }})</li>
+    </ul>
+  </div>

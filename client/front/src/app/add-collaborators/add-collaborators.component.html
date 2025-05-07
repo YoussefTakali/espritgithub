@@ -1,0 +1,25 @@
+<div class="collab-page-wrapper">
+    <div class="collab-container">
+      <h2>Add collaborators to <span class="repo-name">{{ repoName }}</span></h2>
+      <form (ngSubmit)="addCollaborator()" #collabForm="ngForm" class="collab-form">
+        <input
+          type="text"
+          placeholder="Enter username or email"
+          [(ngModel)]="collaborator"
+          name="collaborator"
+          required
+          class="collab-input"
+        />
+        <button type="submit" [disabled]="!collaborator" class="collab-btn">Invite</button>
+      </form>
+      <div *ngIf="collaborators.length > 0" class="collab-list">
+        <h3>Invited Collaborators</h3>
+        <ul>
+          <li *ngFor="let c of collaborators">
+            <span class="collab-user">{{ c }}</span>
+            <button (click)="removeCollaborator(c)" class="remove-btn">Remove</button>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
