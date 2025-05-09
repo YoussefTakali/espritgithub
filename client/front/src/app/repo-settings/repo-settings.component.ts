@@ -8,7 +8,7 @@ import { Router } from '@angular/router';
   styleUrls: ['./repo-settings.component.css']
 })
 export class RepoSettingsComponent {
-  activeTab: 'general' | 'collaborators' | 'delete' = 'general';
+  activeTab: 'general' | 'collaborators' | 'delete' |'branches'| 'commits' = 'general' ;
    ownerName:string="";
   repoName:string = ''; // Replace with actual repo name from route or service
   collaborators: string[] = [];
@@ -23,6 +23,10 @@ export class RepoSettingsComponent {
   branche_add_success:string= '';
   branche_add_error:string= '';
   filteredCollaborators: any[] = [];
+  branche_remove_success:string= '';
+  branche_remove_error:string= '';
+  branche_add_success_2:string= '';
+  branche_add_error_2:string= '';
   updateRepoName() {
     // Implement update logic here
     alert('Repository renamed to: ' + this.repoName);
@@ -43,9 +47,13 @@ export class RepoSettingsComponent {
   ngOnInit() {
     this.fillRepoInfoFromUrl(this.router.url);
    this.getCollaborators();
+
    console.log('Refreshing collaborators and invitations...');
-  
    console.log('Refreshing collaborators*************');
+   setTimeout(() => {
+    this.getBranches();
+  }, 0);
+    console.log('Refreshing branches*************');
  
     }
     
@@ -100,7 +108,8 @@ export class RepoSettingsComponent {
         username: username
       }
     }).subscribe(response => {
-      // handle response, e.g., refresh the list
+      // handle response, e.g., refresh the lis
+      this.removeBranch(username);
     });
 
    
@@ -185,6 +194,8 @@ confirmRemoveCollab() {
       }
     }).subscribe(data => {
       this.branches = data;
+      console.log("*******************************");
+      console.log('Branches:', this.branches);
       // If you want just the names:
       // this.branchNames = data.map(branch => branch.name);
     });
@@ -222,6 +233,7 @@ this.filteredCollaborators = this.collaborators1.filter(c => c.login !== exclude
               }
             }).subscribe(() => {
               this.branche_add_success='Branch created for ' + collaboratorUsername;
+            
               
             });
           } else {
@@ -230,4 +242,107 @@ this.filteredCollaborators = this.collaborators1.filter(c => c.login !== exclude
         });
       }
     });
-  }}
+  }
+  
+  createBranch() {
+    this.http.get<any>('/api/github/latest-sha', {
+      params: {
+        owner: this.ownerName,
+        repo: this.repoName,
+        baseBranch: 'main'
+      }
+    }).subscribe(shaRes => {
+      const sha = shaRes.object.sha;
+  
+      if (!this.newBranchName) return;
+  
+      const params = {
+        owner: this.ownerName,
+        repo: this.repoName,
+        newBranch: this.newBranchName,
+        sha: sha
+      };
+  
+      this.http.post('/api/github/create-branch', null, { params }).subscribe(() => {
+        this.branche_add_success_2 = ` Branch for ${this.newBranchName} was created successfully`;
+        this.getBranches();
+        this.toggleCreateBranch();
+      }, err => {
+        this.branche_add_error_2 = 'Error creating branch for ' + this.newBranchName;
+      });
+    });
+  }
+  
+  newBranchName = '';
+showCreateBranchInput = false;
+branchSearch = '';
+
+toggleCreateBranch() {
+  this.showCreateBranchInput = !this.showCreateBranchInput;
+  this.newBranchName = '';
+}
+
+  setActiveTab() {
+    this.activeTab = "branches"
+   
+      this.getBranches();
+    
+  }
+  defaultBranch: string = 'main';
+
+branchSearchTerm: string = '';
+
+filteredBranches() {
+  return this.branches.filter(branch =>
+    branch.name !== this.defaultBranch &&
+    (!this.branchSearch || branch.name.includes(this.branchSearch))
+  );
+}
+  deleteBranch(branchName: string) {}
+  selectedBranchToRemove: string | null = null;
+  showRemoveBranchModal: boolean = false;
+  
+  openRemoveBranchModal(branchName: string) {
+    this.selectedBranchToRemove = branchName;
+    this.showRemoveBranchModal = true;
+  }
+  
+  closeRemoveBranchModal() {
+    this.selectedBranchToRemove = null;
+    this.showRemoveBranchModal = false;
+  }
+  
+  confirmRemoveBranch() {
+    if (!this.selectedBranchToRemove) return;
+  
+    this.http.delete('/api/github/delete-branch', {
+      params: {
+        owner: this.ownerName,
+        repo: this.repoName,
+        branch: this.selectedBranchToRemove
+      }
+    }).subscribe(() => {
+      this.branche_remove_success = `${this.selectedBranchToRemove} was deleted successfully`;
+      this.getBranches(); // Refresh list
+      this.closeRemoveBranchModal();
+    }, err => {
+      this.branche_remove_error = `Error deleting branch ${this.selectedBranchToRemove}`;
+      this.closeRemoveBranchModal();
+    });
+  }
+  removeBranch(branchName: string) {
+    this.http.delete('/api/github/delete-branch', {
+      params: {
+        owner: this.ownerName,
+        repo: this.repoName,
+        branch: branchName,
+      }
+    }).subscribe(() => {
+      this.branche_remove_success = `${this.selectedBranchToRemove} was deleted successfully`;
+      this.getBranches(); // Refresh list
+      this.closeRemoveBranchModal();
+    }, err => {
+      this.branche_remove_error = `Error deleting branch ${this.selectedBranchToRemove}`;
+      this.closeRemoveBranchModal();
+    });}
+  }

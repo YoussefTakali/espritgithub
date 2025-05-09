@@ -8,6 +8,13 @@
       <li [class.active]="activeTab === 'collaborators'" (click)="activeTab = 'collaborators'">
         <img src="assets/user-group-solid.svg" alt="Code Icon" width="16" height="16" style="margin-right: 4px;"> Collaborators
       </li>
+  
+      <li [class.active]="activeTab === 'branches'" (click)="activeTab = 'branches'">
+        <img src="assets/code-branch-solid.svg" alt="Code Icon" width="16" height="16" style="margin-right: 4px;"> Branches
+      </li>
+      <li [class.active]="activeTab === 'commits'" (click)="activeTab = 'commits'">
+        <img src="assets/code-commit-solid.svg" alt="Code Icon" width="16" height="16" style="margin-right: 4px;"> Commits
+      </li>
       <li [class.active]="activeTab === 'delete'" (click)="activeTab = 'delete'">
         <img src="assets/bin.png" alt="Code Icon" width="16" height="16" style="margin-right: 4px;"> Delete repository
       </li>
@@ -33,7 +40,7 @@
 
     <!-- Collaborators Tab -->
     <div *ngIf="activeTab === 'collaborators'">
-      <h2>Collaborators</h2>
+      <h2 class="collab">Collaborators</h2>
       <div class="collab-block">
         <div *ngIf="collaborators1.length === 1 && invitations.length ===0" class="empty-collab">
           <p class="empty-collab-message">You haven't invited any collaborators yet</p>
@@ -158,5 +165,81 @@
         </div>
       </div>
     </div>
+<!-- Branches Tab -->
+<div class="sidebar-section" *ngIf="activeTab === 'branches'">
+  <!-- Header + Create -->
+  <div class="branches-header">
+    <h3>Branches</h3>
+    <button class="create-branch-btn" (click)="toggleCreateBranch()">New branch</button>
+  </div>
+
+  <!-- Create Branch Form -->
+  <div *ngIf="showCreateBranchInput" class="create-branch-form">
+    <input
+      type="text"
+      [(ngModel)]="newBranchName"
+      placeholder="Enter new branch name"
+      class="branch-input"
+    />
+    <button (click)="createBranch()" class="confirm-btn">Create</button>
+    <button (click)="toggleCreateBranch()" class="cancel-btn">Cancel</button>
+  </div>
+
+  <!-- Search Bar -->
+  <input
+    type="text"
+    class="branch-search"
+    placeholder="Search branches..."
+    [(ngModel)]="branchSearch"
+  />
+
+<!-- Default Branch Section -->
+<h4>Default</h4>
+<div class="branch-card">
+  <div class="branch-row">
+    <div class="branch-left">
+      <span class="branch-badge">main</span>
+    </div>
+    <div class="branch-right">
+      <span class="default-label">Default</span>
+      <button class="delete-btn">
+        <img src="assets/bin.png" alt="Delete Icon" width="16" height="16" />
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Your Branches Section -->
+<h4>Your branches</h4>
+<div *ngFor="let branch of filteredBranches()" class="branch-card">
+  <div class="branch-row">
+    <div class="branch-left">
+      <span class="branch-badge">{{ branch.name }}</span>
+    </div>
+    <div class="branch-right">
+      <button class="delete-btn" (click)="openRemoveBranchModal(branch.name)">
+        <img src="assets/bin.png" alt="Delete Icon" width="16" height="16" />
+      </button>
+    </div>
+  </div>
+  <div class="modal" *ngIf="showRemoveBranchModal">
+    <div class="modal-content">
+      <h3>Delete Branch</h3>
+      <p>Are you sure you want to delete the branch <b>{{ selectedBranchToRemove }}</b>? This action cannot be undone.</p>
+      <div class="modal-actions">
+        <button class="danger" (click)="confirmRemoveBranch()">Yes, delete</button>
+        <button (click)="closeRemoveBranchModal()">Cancel</button>
+      </div>
+    </div>
+  </div>
+  
+</div>
+
+
+  <!-- Feedback Messages -->
+  <div *ngIf="branche_add_success" class="success-msg">{{ branche_add_success_2 }}</div>
+  <div *ngIf="branche_add_error" class="error-msg">{{ branche_add_error_2 }}</div>
+</div>
+
   </section>
 </div>

@@ -31,7 +31,7 @@
         <div class="visibility-section">
           <label class="radio-label">
             <input type="radio" name="visibility" [(ngModel)]="repo.visibility" value="public" required>
-            <span class="icon">📂</span>
+            <span class="icon"><img src="assets/folder-open-solid.svg" alt="Code Icon" width="26" height="16"></span>
             <span class="box">
               <b class="desc">Public</b>
               <div class="radio-helper">Anyone on the internet can see this repository.</div>
@@ -39,7 +39,7 @@
           </label>
           <label class="radio-label">
             <input type="radio" name="visibility" [(ngModel)]="repo.visibility" value="private">
-            <span class="icon">🔒</span>
+            <span class="icon"><img src="assets/lock-solid.svg" alt="Code Icon" width="26" height="16"></span>
             <span class="box">
               <b class="desc">Private</b>
               <div class="radio-helper">You choose who can see and commit to this repository.</div>

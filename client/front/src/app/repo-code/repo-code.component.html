@@ -1,13 +1,25 @@
-<div class="invite-collab-block">
+<div *ngIf=" collaborators.length <=1" class="invite-collab-block">
     <h3>Add collaborators to this repository</h3>
     <p>Search for people using their username or email address.</p>
     <button (click)="goToAccessControl()">Invite collaborators</button>
   </div>
-
-  <div *ngIf="repo.auto_init || repo.gitignore_template">
-    <h3>Repository initialized with:</h3>
-    <ul>
-      <li *ngIf="repo.auto_init">README file</li>
-      <li *ngIf="repo.gitignore_template">.gitignore ({{ repo.gitignore_template }})</li>
+  <div class="branch-dropdown" style="position: relative; display: inline-block;">
+    <button class="branch-btn" (click)="toggleBranchList()">
+   
+      <img src="assets/code-branch-solid.svg" alt="Branch Icon" width="16" height="16" (click)="toggleBranchList()" />
+      {{ selectedBranch }}
+      <span class="arrow">&#9662;</span>
+    </button>
+    <ul class="branch-list" *ngIf="showBranchList" style="position: absolute; background: #fff; border: 1px solid #ddd; margin: 0; padding: 0; list-style: none; z-index: 10;">
+      <li *ngFor="let branch of branches" (click)="selectBranch(branch.name)" class="branch-item">
+        <span>{{ branch.name }}</span>
+        <span *ngIf="branch.name === 'main'" class="default-badge">  default</span>
+      </li>
     </ul>
+    
+ 
+
+
+
   </div>
+
