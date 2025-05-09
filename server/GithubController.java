@@ -188,6 +188,11 @@ public class GithubController {
             @RequestParam String owner,
             @RequestParam String repo
     ) {
+        try {
+            System.out.println("getting branches for " + owner + " " + repo);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         String url = String.format("/repos/%s/%s/branches", owner, repo);
 
         return webClient.get()
@@ -220,5 +225,35 @@ public class GithubController {
                         return response.createException().flatMap(Mono::error);
                     }
                 });
+    }
+    @GetMapping("/repo-contents")
+    public Mono<String> getRepoContents(
+            @RequestParam String owner,
+            @RequestParam String repo,
+            @RequestParam(required = false, defaultValue = "") String path
+    ) {
+        String url = String.format("/repos/%s/%s/contents/%s", owner, repo, path);
+        return webClient.get()
+                .uri(url)
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + githubToken)
+                .header("Accept", "application/vnd.github+json")
+                .retrieve()
+                .bodyToMono(String.class);
+    }
+
+    @DeleteMapping("/delete-branch")
+    public Mono<String> deleteBranch(
+            @RequestParam String owner,
+            @RequestParam String repo,
+            @RequestParam String branch
+    ) {
+        String url = String.format("/repos/%s/%s/git/refs/heads/%s", owner, repo, branch);
+        return webClient.delete()
+                .uri(url)
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + githubToken)
+                .header("Accept", "application/vnd.github+json")
+                .retrieve()
+                .bodyToMono(String.class)
+                .onErrorResume(e -> Mono.just("Error deleting branch: " + e.getMessage()));
     }
 }
