@@ -6,7 +6,7 @@ public class AddCollaboratorRequest {
         private String owner;
         private String repo;
         private String username;
-        private String permission; // e.g. "push", "pull", "admin"
+        private String permission;// e.g. "push", "pull", "admin"
         // getters and setters
 
     public String getOwner() {
