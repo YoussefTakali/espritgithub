@@ -241,5 +241,41 @@
   <div *ngIf="branche_add_error" class="error-msg">{{ branche_add_error_2 }}</div>
 </div>
 
+
+
+
+
+
+
+
+
+
+<!-- Commits Tab -->
+<div class="sidebar-section" *ngIf="activeTab === 'commits'">
+  <h3>Branches</h3>
+  <ul class="branch-list">
+    <li *ngFor="let branch of branches" style="margin-bottom: 8px;">
+      <span>{{ branch.name }}</span>
+      <button (click)="getBranchCommits(branch.name)">View Commits</button>
+    </li>
+  </ul>
+
+  <h3 *ngIf="commits.length > 0">Commits</h3>
+  <ul class="commit-list">
+    <li *ngFor="let commit of commits" class="commit-item" style="margin-bottom: 12px;">
+      <div><strong>Message:</strong> {{ commit.commit.message }}</div>
+      <div>
+        <strong>Author:</strong>
+        <span *ngIf="commit.author">
+          <img [src]="commit.author.avatar_url" width="20" height="20" style="vertical-align: middle; border-radius: 50%;"> {{ commit.author.login }}
+        </span>
+        <span *ngIf="!commit.author">{{ commit.commit.author.name }}</span>
+      </div>
+      <div><strong>Date:</strong> {{ commit.commit.author.date | date:'short' }}</div>
+      <hr>
+    </li>
+  </ul>
+</div>
+
   </section>
 </div>

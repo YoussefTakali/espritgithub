@@ -345,4 +345,26 @@ filteredBranches() {
       this.branche_remove_error = `Error deleting branch ${this.selectedBranchToRemove}`;
       this.closeRemoveBranchModal();
     });}
-  }
+    commits: any[] = [];
+
+    getBranchCommits(branchName: string) {
+      this.http.get<any[]>('/api/github/branch-commits', {
+        params: {
+          owner: this.ownerName,
+          repo: this.repoName,
+          branch: branchName
+        }
+      }).subscribe(
+        (data) => {
+          this.commits = data;  // ✅ This is what your HTML uses
+          console.log('Commits for', branchName, data);
+        },
+        (err) => {
+          console.error('Error fetching commits:', err);
+        }
+      );
+    }
+    
+  }    
+  
+  
