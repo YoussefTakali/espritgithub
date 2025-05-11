@@ -19,6 +19,11 @@ ownerName:string="";
     gitignore_template: 'Node'
   };
   files: any[] = [];
+  path: string = '';
+  contents: any[] = [];
+  isFile: boolean = false;
+  fileContent: string = '';
+  latestCommitBanner: any = null;
 
   constructor(private router: Router, private route: ActivatedRoute,private http: HttpClient) {}
   goToAccessControl() {
@@ -50,6 +55,33 @@ ownerName:string="";
     this.filteredCollaborators;
   console.log(this.collaborators)
   console.log('*************************************');
+
+
+
+  
+
+  this.loadContents();
+
+}
+getLatestRepoCommit() {
+  this.http.get<any>(`/api/github/latest-repo-commit`, {
+    params: {
+      owner: this.ownerName,
+      repo: this.repoName,
+      branch: this.selectedBranch
+    }
+  }).subscribe(data => {
+    if (Array.isArray(data) && data.length > 0) {
+      const commit = data[0];
+      this.latestCommitBanner = {
+        message: commit.commit.message,
+        author: commit.commit.author.name,
+        avatarUrl: commit.author?.avatar_url || 'default-avatar.png', // ✅ FIXED
+        time: new Date(commit.commit.author.date),
+        sha: commit.sha.substring(0, 7)
+      };
+    }
+  });
 }
 
       
@@ -89,6 +121,7 @@ getBranches() {
       this.branches = data;
       if (this.branches.length > 0) {
         this.selectedBranch = this.branches[0].name;
+
       }
     },
     error => { console.error('Error fetching branches:', error); }
@@ -103,22 +136,83 @@ toggleBranchList() {
 selectBranch(branchName: string) {
   this.selectedBranch = branchName;
   this.showBranchList = false;
+  console.log('Selected branch:', this.selectedBranch);
+  this.loadContents(this.path); // Load contents for the selected branch
+  console.log('Loading contents for branch:', this.selectedBranch);
+
   // Optionally: load files for this branch
 }
-currentPath: string = '';
-getRepoContents() {
-  return this.http.get<any[]>('/api/github/repo-contents', {
-    
-    params: { owner:this.ownerName, repo:this.repoName, path:'' }
-  }).subscribe(
-    data => {
-      console.log('repos content', data); // <--- Add this!
-      this.files = data;
-      console.log('content:', this.files);
-     
-    },
-    error => { console.error('Error fetching branches:', error); }
-  );
+loadContents(path: string = ''): void {
+  this.path = path;
+  console.log('Loading contents for:', this.ownerName, this.repoName, path);
+
+  this.http.get<any>(`/api/github/repo-contents`, {
+    params: {
+      owner: this.ownerName,
+      repo: this.repoName,
+      path: path,
+      branch: this.selectedBranch
+    }
+  }).subscribe(data => {
+    if (Array.isArray(data)) {
+      // It's a directory
+      this.contents = data;
+      this.isFile = false;
+
+      // 🔁 Fetch latest commit message for each item
+      this.contents.forEach(item => {
+        this.http.get<any>(`/api/github/latest-commit`, {
+          params: {
+            owner: this.ownerName,
+            repo: this.repoName,
+            path: item.path,
+            branch: this.selectedBranch
+          }
+        }).subscribe(commitData => {
+          if (Array.isArray(commitData) && commitData.length > 0) {
+            item.latestCommit = commitData[0].commit.message;
+          } else {
+            item.latestCommit = 'No recent commit';
+          }
+        }, error => {
+          item.latestCommit = 'Unable to fetch commit';
+        });
+      });
+
+      // 📄 Load README if exists
+      const readme = data.find(item => item.name.toLowerCase() === 'readme.md');
+      if (readme) {
+        this.http.get<any>(`/api/github/repo-contents`, {
+          params: {
+            owner: this.ownerName,
+            repo: this.repoName,
+            path: readme.path,
+            branch: this.selectedBranch
+          }
+        }).subscribe(readmeData => {
+          if (readmeData && readmeData.content) {
+            this.readmeContent = atob(readmeData.content); // decode base64
+          }
+        });
+      } else {
+        this.readmeContent = '';
+      }
+
+    } else if (data && data.content) {
+      // It's a file
+      this.isFile = true;
+      this.fileContent = atob(data.content);
+
+      if (path.toLowerCase().endsWith('readme.md')) {
+        this.readmeContent = this.fileContent;
+      }
+    } else {
+      // Unexpected response
+      this.contents = [];
+      this.isFile = false;
+      this.readmeContent = '';
+    }
+    this.getLatestRepoCommit();
+  });
 }
- 
-}
+readmeContent: string = '';}

@@ -259,23 +259,24 @@
       <button (click)="getBranchCommits(branch.name)">View Commits</button>
     </li>
   </ul>
-
   <h3 *ngIf="commits.length > 0">Commits</h3>
   <ul class="commit-list">
     <li *ngFor="let commit of commits" class="commit-item" style="margin-bottom: 12px;">
       <div><strong>Message:</strong> {{ commit.commit.message }}</div>
       <div>
         <strong>Author:</strong>
+        <!-- Show avatar and login if available -->
         <span *ngIf="commit.author">
-          <img [src]="commit.author.avatar_url" width="20" height="20" style="vertical-align: middle; border-radius: 50%;"> {{ commit.author.login }}
+          <img *ngIf="commit.author.avatar_url" [src]="commit.author.avatar_url" width="20" height="20" style="vertical-align: middle; border-radius: 50%;">
+          {{ commit.author.login }}
         </span>
-        <span *ngIf="!commit.author">{{ commit.commit.author.name }}</span>
+        <!-- Otherwise, show authorName -->
+        <span *ngIf="!commit?.authorLogin">{{ commit?.authorName }}</span>
       </div>
       <div><strong>Date:</strong> {{ commit.commit.author.date | date:'short' }}</div>
       <hr>
     </li>
   </ul>
 </div>
-
   </section>
 </div>

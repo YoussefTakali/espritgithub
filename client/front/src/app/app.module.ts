@@ -14,7 +14,9 @@ import { RepoPageComponent } from './repo-page/repo-page.component';
 import { RepoCodeComponent } from './repo-code/repo-code.component';
 import { RepoSettingsComponent } from './repo-settings/repo-settings.component';
 import { CommonModule } from '@angular/common';
-import { HttpClientModule } from '@angular/common/http'; // Import HttpClientModule
+import { HttpClientModule } from '@angular/common/http';
+import { RepoListComponent } from './repo-list/repo-list.component';
+import { TimeAgoPipe } from './pipes/time-ago.pipe'; // Import HttpClientModule
 @NgModule({
   declarations: [
     AppComponent,
@@ -27,7 +29,9 @@ import { HttpClientModule } from '@angular/common/http'; // Import HttpClientMod
     AddCollaboratorsComponent,
     RepoPageComponent,
     RepoCodeComponent,
-    RepoSettingsComponent
+    RepoSettingsComponent,
+    RepoListComponent,
+    TimeAgoPipe
    
   ],
   imports: [

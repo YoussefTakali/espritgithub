@@ -11,6 +11,7 @@ export class RepoFormComponent {
     username: 'maramoueslati', // Replace with actual username from your auth/user service
     avatarUrl: 'https://avatars.githubusercontent.com/u/000000?v=4' // Replace with actual avatar URL
   };
+  err:string = '';
 
   repo = {
     name: '',
@@ -26,6 +27,8 @@ export class RepoFormComponent {
     console.log(this.repo.visibility);
     this.http.post('/api/github/create-repo', {
       name: this.repo.name,
+      ownerName: this.user.username,
+      
       description: this.repo.description,
       isPrivate: this.repo.visibility === 'private' ,
       auto_init: this.repo.auto_init, // send as boolean
@@ -33,5 +36,9 @@ export class RepoFormComponent {
     }).subscribe((response: any) => {
       this.router.navigate(['/repo', this.user.username, this.repo.name]);
     });
-  }
+
+
+
+}
+  
 }

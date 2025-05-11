@@ -352,3 +352,29 @@
     display: flex;
     align-items: center;
   }
+
+  .get-repos-btn {
+    padding: 8px 16px;
+    background-color: #ff4b5c;
+    color:  #f3f4f6;
+    border: none;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: bold;
+    margin-right: 100px;
+    cursor: pointer;
+    height: 40px;
+    box-shadow: 0 4px 8px rgba(255, 75, 92, 0.2);
+    transition: all 0.3s ease;
+  }
+  
+  .get-repos-btn:hover {
+    background-color: #ff2e44;
+    box-shadow: 0 6px 12px rgba(255, 75, 92, 0.4);
+    transform: translateY(-1px);
+  }
+  
+  .get-repos-btn:active {
+    transform: scale(0.98);
+  }
+  

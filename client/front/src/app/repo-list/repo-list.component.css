@@ -1,0 +1,81 @@
+.repo-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 24px;
+    background-color: #f0f2f5;
+    min-height: 100vh;
+  }
+  
+  .repo-search {
+    margin: 20px;
+    width: 60%;
+    max-width: 400px;
+    padding: 10px 16px;
+    font-size: 16px;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    outline: none;
+    transition: border 0.2s ease;
+  }
+  
+  .repo-search:focus {
+    border-color: #ff4b5c;
+    box-shadow: 0 0 0 2px rgba(255, 75, 92, 0.2);
+  }
+  
+  .no-repo {
+    margin-top: 20px;
+    color: #999;
+    font-size: 16px;
+  }
+  
+  .repo-list {
+    list-style: none;
+    padding: 0;
+    width: 60%;
+    max-width: 800px;
+  }
+  
+  .repo-card {
+    background: white;
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 16px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.06);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+  
+  .repo-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.1);
+  }
+  
+  .repo-title {
+    margin: 0 0 10px;
+    color: #2c3e50;
+  }
+  
+  .repo-desc {
+    color: #555;
+    margin-bottom: 12px;
+  }
+  
+  .repo-link {
+    color:  #ff4b5c;
+    text-decoration: none;
+    font-weight: bold;
+  }
+  
+  .repo-link:hover {
+    text-decoration: underline;
+ 
+  text-shadow: 0 0 0 2px rgba(255, 75, 92, 0.2);
+  }
+  
+  .repo-date {
+    font-size: 12px;
+    color: #888;
+    margin-top: 8px;
+  }
+  

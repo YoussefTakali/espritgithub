@@ -1,25 +1,92 @@
-<div *ngIf=" collaborators.length <=1" class="invite-collab-block">
-    <h3>Add collaborators to this repository</h3>
-    <p>Search for people using their username or email address.</p>
-    <button (click)="goToAccessControl()">Invite collaborators</button>
+<!-- Repository Container with proper layout -->
+<div class="repo-container-wrapper">
+  <!-- Repo Header -->
+  <div class="repo-header">
+    <span class="repo-title">{{ repoName }}</span>
   </div>
-  <div class="branch-dropdown" style="position: relative; display: inline-block;">
-    <button class="branch-btn" (click)="toggleBranchList()">
-   
-      <img src="assets/code-branch-solid.svg" alt="Branch Icon" width="16" height="16" (click)="toggleBranchList()" />
-      {{ selectedBranch }}
-      <span class="arrow">&#9662;</span>
-    </button>
-    <ul class="branch-list" *ngIf="showBranchList" style="position: absolute; background: #fff; border: 1px solid #ddd; margin: 0; padding: 0; list-style: none; z-index: 10;">
-      <li *ngFor="let branch of branches" (click)="selectBranch(branch.name)" class="branch-item">
-        <span>{{ branch.name }}</span>
-        <span *ngIf="branch.name === 'main'" class="default-badge">  default</span>
-      </li>
-    </ul>
+
+  <!-- Main Content Area - Centered with proper width -->
+  <div class="main-content">
+    <!-- Invite Collaborators Block - Only shown when needed -->
+    <div *ngIf="collaborators.length <= 1" class="invite-collab-block">
+      <h2>Add collaborators to this repository</h2>
+      <p>Search for people using their username or email address.</p>
+      <button  class="add-btn"(click)="goToAccessControl()">Invite collaborators</button>
+    </div>
+
+    <!-- Branch Selector and Commit Banner in same row -->
+    <div class="repo-navigation">
+      <!-- Branch Selector -->
+      <div class="branch-dropdown">
+        <button class="branch-btn" (click)="toggleBranchList()">
+          <img src="assets/code-branch-solid.svg" alt="Branch Icon" width="16" height="16" />
+          {{ selectedBranch }}
+          <span class="arrow">&#9662;</span>
+        </button>
+        <ul class="branch-list" *ngIf="showBranchList">
+          <li *ngFor="let branch of branches" (click)="selectBranch(branch.name)" class="branch-item">
+            <span>{{ branch.name }}</span>
+            <span *ngIf="branch.name === 'main'" class="default-badge">default</span>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Commit Banner - Always attached to file explorer -->
+    <div *ngIf="latestCommitBanner" class="commit-banner">
+      <!-- Left: avatar, author, message -->
+      <div class="commit-left">
+        <img [src]="latestCommitBanner.avatarUrl" alt="avatar" class="commit-avatar" />
+        <div class="commit-info">
+          <strong>{{ latestCommitBanner.author }}</strong>
+          <span class="commit-message">{{ latestCommitBanner.message }}</span>
+        </div>
+      </div>
     
- 
+      <!-- Right: sha, time, icon -->
+      <div class="commit-right">
+        <code class="commit-sha">{{ latestCommitBanner.sha.substring(0, 7) }}</code>
+        <span class="commit-time">{{ latestCommitBanner.time | timeAgo }}</span>
+        <span class="commit-history">
+          <i class="fas fa-history"></i> {{ latestCommitBanner.count }} Commits
+        </span>
+      </div>
+    </div>
+    
+    <!-- File Explorer (directory view) -->
+    <div *ngIf="!isFile" class="file-list-container">
+      <div class="file-list">
+        <div *ngFor="let item of contents" class="file-row" (click)="loadContents(item.path)">
+          <div class="file-left">
+            <div class="file-icon">
+              <span *ngIf="item.type === 'dir'">
+                <img src="assets/folder-solid.svg" alt="Folder Icon" width="16" height="16" />
+              </span>
+              <span *ngIf="item.type === 'file'">
+                <img src="assets/file-lines-solid.svg" alt="File Icon" width="16" height="16" />
+              </span>
+              <span *ngIf="item.type !== 'file' && item.type !== 'dir'">❓</span>
+            </div>
+            <div class="file-name">{{ item.name }}</div>
+          </div>
+          <div class="file-commit" *ngIf="item.latestCommit">{{ item.latestCommit }}</div>
+        </div>
+      </div>
+    </div>
 
+    <!-- File Viewer (when file is selected) -->
+    <div *ngIf="isFile" class="file-viewer">
+      <button class="back-btn" (click)="loadContents(path.substring(0, path.lastIndexOf('/')))">
+        ⬅ Back
+      </button>
+      <h3>{{ path }}</h3>
+      <pre class="file-content">{{ fileContent }}</pre>
+    </div>
 
-
+    <!-- README Preview -->
+    <div *ngIf="readmeContent" class="readme-preview">
+      <h3 class="readme-title">README</h3>
+      <pre class="readme-box">{{ readmeContent }}</pre>
+    </div>
   </div>
-
+</div>

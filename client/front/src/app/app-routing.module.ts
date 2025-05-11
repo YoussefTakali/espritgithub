@@ -8,6 +8,7 @@ import { AddCollaboratorsComponent } from './add-collaborators/add-collaborators
 import { RepoPageComponent } from './repo-page/repo-page.component';
 import { RepoCodeComponent } from './repo-code/repo-code.component';
 import { RepoSettingsComponent } from './repo-settings/repo-settings.component';
+import { RepoListComponent } from './repo-list/repo-list.component';
 const routes: Routes = [
   {
     path: '',
@@ -24,6 +25,7 @@ const routes: Routes = [
       { path: 'settings', component: RepoSettingsComponent }
     ]
   },  
+  {path:'getRepos',component:RepoListComponent},
       
     ]
   }

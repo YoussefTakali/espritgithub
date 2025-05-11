@@ -1,54 +1,344 @@
+/* Main Repository Layout */
+.repo-container-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+}
+
+.main-content {
+  width: 100%;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 16px;
+}
+
+.add-btn{
+  padding: 8px 16px;
+  background-color: #ff4b5c;
+  color:  #f3f4f6;
+  border: none;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: bold;
+
+  cursor: pointer;
+  box-shadow: 0 4px 8px rgba(255, 75, 92, 0.2);
+  transition: all 0.3s ease;
+}
+
+/* Repository Header */
 .repo-header {
-    border-bottom: 1px solid #e1e4e8;
-    padding: 1.5rem 2rem 0.5rem 2rem;
-    background: #fff;
-  }
-  .repo-title {
-    font-size: 1.5rem;
-    font-weight: 600;
-  }
-  .repo-tabs {
-    margin-top: 1rem;
-  }
-  .repo-tabs a {
-    margin-right: 2rem;
-    text-decoration: none;
-    color: #24292e;
-    font-weight: 500;
-    padding-bottom: 0.5rem;
-    border-bottom: 2px solid transparent;
-  }
-  .repo-tabs a.active {
-    border-bottom: 2px solid #e53935;
-    color: #e53935;
-  }
-  .invite-collab-block {
-    background: #f6f8fa;
-    border: 1px solid #e1e4e8;
-    border-radius: 6px;
-    padding: 2rem;
-    margin: 2rem;
-    text-align: center;
-  }
-  .settings-section {
-    margin: 2rem;
-    padding: 1.5rem;
-    background: #fff;
-    border: 1px solid #e1e4e8;
-    border-radius: 6px;
-  }
-  .danger {
-    background: #e53935;
-    color: #fff;
-    border: none;
-    padding: 0.75rem 1.5rem;
-    border-radius: 6px;
-    font-weight: bold;
-    cursor: pointer;
-  }
+  width: 100%;
+  border-bottom: 1px solid #e1e4e8;
+  padding: 1.5rem 2rem 0.5rem 2rem;
+  background: #fff;
+  margin-bottom: 16px;
+}
 
+.repo-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #24292e;
+}
 
-  .invite-collab-block button {
+/* Repository Navigation Area */
+.repo-navigation {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  margin: 16px 0;
+}
+
+/* Branch Dropdown */
+.branch-dropdown {
+  position: relative;
+  margin-bottom: 0;
+}
+
+.branch-btn {
+  background-color: #f6f8fa;
+  color: #24292f;
+  border: 1px solid #d0d7de;
+  padding: 6px 24px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  box-shadow: 0 1px 0 rgba(27, 31, 35, 0.04);
+  transition: background 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.branch-btn:hover {
+  background-color: #f3f4f6;
+}
+
+.branch-btn .arrow {
+  margin-left: 8px;
+  font-size: 10px;
+}
+
+.branch-list {
+  position: absolute;
+  background-color: #fff;
+  border: 1px solid #d0d7de;
+  border-radius: 6px;
+  margin-top: 4px;
+  list-style: none;
+  padding: 0;
+  width: 240px;
+  max-height: 400px;
+  overflow-y: auto;
+  box-shadow: 0 8px 24px rgba(140, 149, 159, 0.2);
+  z-index: 100;
+}
+
+.branch-item {
+  padding: 8px 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.branch-item:hover {
+  background-color: #f6f8fa;
+}
+
+.default-badge {
+  background-color: #f1f1f1;
+  color: #555;
+  font-size: 12px;
+  padding: 2px 6px;
+  border-radius: 20px;
+  border: 1px solid #d0d7de;
+  font-weight: 500;
+  margin-left: 10px;
+}
+
+/* Commit Banner - Attached directly above file list */
+.commit-banner {
+  background-color: #f6f8fa;
+  border: 1px solid #d0d7de;
+  border-radius: 6px 6px 0 0;
+  padding: 12px 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 97,99%;
+  margin: 0;
+  border-bottom: none;
+}
+
+.commit-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.commit-avatar {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+}
+
+.commit-info {
+  display: flex;
+  flex-direction: column;
+  font-size: 14px;
+}
+
+.commit-message {
+  color: #57606a;
+  font-weight: 400;
+}
+
+.commit-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 13px;
+  color: #57606a;
+}
+
+.commit-sha {
+  background: #eaecef;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-family: SFMono-Regular, Consolas, "Liberation Mono", Menlo, monospace;
+  font-size: 12px;
+}
+
+.commit-history i {
+  margin-right: 4px;
+}
+
+/* File List Container - Attached to commit banner */
+.file-list-container {
+  width: 100%;
+  margin-bottom: 24px;
+}
+
+.file-list {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid #e1e4e8;
+  border-radius: 0 0 6px 6px;
+  background-color: #fff;
+  width: 100%;
+}
+
+.file-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 16px;
+  border-bottom: 1px solid #eaecef;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.2s;
+}
+
+.file-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  overflow: hidden;
+  flex: 1;
+}
+
+.file-icon {
+  width: 16px;
+  height: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.file-name {
+  color: #0969da;
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.file-commit {
+  flex-shrink: 0;
+  font-size: 12px;
+  color: #57606a;
+  white-space: nowrap;
+  max-width: 45%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.file-row:last-child {
+  border-bottom: none;
+}
+
+.file-row:hover {
+  background-color: #f6f8fa;
+}
+
+.file-row:hover .file-name {
+  text-decoration: underline;
+}
+
+/* File Viewer */
+.file-viewer {
+  width: 100%;
+  margin-bottom: 24px;
+}
+
+.back-btn {
+  background-color: #ff4d4f;
+  color: white;
+  padding: 6px 12px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  margin-bottom: 16px;
+  font-size: 14px;
+}
+
+.back-btn:hover {
+  background-color: #ff4d4f;
+}
+
+.file-content {
+  background-color: #f6f8fa;
+  padding: 16px;
+  white-space: pre-wrap;
+  border-radius: 6px;
+  font-family: SFMono-Regular, Consolas, "Liberation Mono", Menlo, monospace;
+  border: 1px solid #e1e4e8;
+  width: 100%;
+  overflow-x: auto;
+  line-height: 1.5;
+  font-size: 12px;
+}
+
+/* README Preview */
+.readme-preview {
+  width: 100%;
+  background-color: #ffffff;
+  border: 1px solid #e1e4e8;
+  border-radius: 6px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  padding: 24px;
+  margin-bottom: 24px;
+}
+
+.readme-title {
+  font-weight: 600;
+  margin-bottom: 16px;
+  font-size: 16px;
+  color: #24292f;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #e1e4e8;
+}
+
+.readme-box {
+  white-space: pre-wrap;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
+  font-size: 14px;
+  color: #24292f;
+  line-height: 1.5;
+}
+
+/* Invite Collaborators Block */
+.invite-collab-block {
+  background-color: #f8f9fb;
+  border: 1px solid #e2e5ec;
+  border-radius: 10px;
+  padding: 32px 24px;
+  text-align: center;
+  margin: 24px 0;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+  width: 100%;
+}
+
+.invite-collab-block h2 {
+  color: #24292f;
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.invite-collab-block p {
+  color: #57606a;
+  font-size: 14px;
+  margin-bottom: 20px;
+}
+
+.invite-collab-block button {
+
     padding: 8px 16px;
     background-color: #ff4b5c;
     color:  #f3f4f6;
@@ -60,116 +350,8 @@
     box-shadow: 0 4px 8px rgba(255, 75, 92, 0.2);
     transition: all 0.3s ease;
   }
-  
-  .invite-collab-block button:hover {
-    background-color: #ff2e44;
-    box-shadow: 0 6px 12px rgba(255, 75, 92, 0.4);
-    transform: translateY(-1px);
-  }
 
-  .invite-collab-block {
-    background-color: #f8f9fb;
-    border: 1px solid #e2e5ec;
-    border-radius: 10px;
-    padding: 40px 20px;
-    text-align: center;
-    margin-top: 20px;
-    box-shadow: 0 1px 4px rgba(0,0,0,0.05);
-  }
-  
-  .invite-collab-block h2 {
-    color: #111;
-    font-size: 20px;
-    font-weight: 700;
-    margin-bottom: 10px;
-    font-family: 'Segoe UI', sans-serif;
-  }
-  
-  .invite-collab-block p {
-    color: #555;
-    font-size: 15px;
-    margin-bottom: 25px;
-    font-family: 'Segoe UI', sans-serif;
-  }
 
-  .branch-dropdown {
-    position: relative;
-    display: inline-block;
-    font-family: "Segoe UI", sans-serif;
-    border-radius: 25px;
-    width: 20%;
-    margin-top: 100px;
-  
-  
-
-  }
-  
-  .branch-btn {
-    background-color: #fff;
-    color: #24292f;
-    border: 1px solid #d0d7de;
-    padding: 6px 12px;
-    border-radius: 6px;
-    cursor: pointer;
-    font-size: 14px;
-    box-shadow: 0 1px 0 rgba(27, 31, 35, 0.04);
-    transition: background 0.2s;
-    margin-right: 50px;
-  }
-  
-  .branch-btn:hover {
-    background-color: #f6f8fa;
-  }
-  
-  .branch-btn .arrow {
-    margin-left: 8px;
-    font-size: 10px;
-    
-  }
-  
-  .branch-list {
-    position: absolute;
-    background-color: #fff;
-    border: 1px solid #d0d7de;
-    border-radius: 6px;
-    margin-top: 4px;
-    list-style: none;
-    padding: 0;
-    width: 100%;
-    box-shadow: 0 8px 24px rgba(140, 149, 159, 0.2);
-    z-index: 10;
-  }
-  
-  .branch-list li {
-    padding: 8px 12px;
-    cursor: pointer;
-    font-size: 14px;
-  }
-  
-  .branch-list li:hover {
-    background-color: #f6f8fa;
-  }
-  .branch-item {
-    padding: 8px 12px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    cursor: pointer;
-    transition: background 0.2s ease;
-  }
-  
-  .branch-item:hover {
-    background-color: #f6f8fa;
-  }
-  
-  .default-badge {
-    background-color: #f1f1f1;
-    color: #555;
-    font-size: 12px;
-    padding: 2px 6px;
-    border-radius: 20px;
-    border: 1px solid #d0d7de;
-    font-weight: 500;
-    margin-left: 10px;
-  }
- 
+.invite-collab-block button:hover {
+  background-color: #0550af;
+}

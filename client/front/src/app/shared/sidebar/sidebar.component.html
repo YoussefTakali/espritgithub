@@ -21,12 +21,13 @@
         <div class="s-link-text">Projects</div>
       </li>
       <li class="s-link">
-        <a routerLink="dashboard/create_repo" style="text-decoration: none; color: inherit; display: flex; align-items: center;">
+        <a routerLink="getRepos" routerLinkActive="active" style="text-decoration: none; color: inherit; display: flex; align-items: center;">
           <i class="fas fa-project-diagram s-icon"></i>
-          <div class="s-link-text">Create Repo</div>
+          <div class="s-link-text">get repos </div>
         </a>
       </li> 
     </ul>
+    <router-outlet></router-outlet>
     
   </div>
   
