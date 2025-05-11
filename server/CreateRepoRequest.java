@@ -3,6 +3,7 @@ package com.example.gitbackend.entities;
 public class CreateRepoRequest {
 
         private String name;
+        private String ownerName;
         private String description;
         private boolean isPrivate;
         private boolean auto_init; // <-- matches JSON
@@ -47,5 +48,11 @@ public class CreateRepoRequest {
 
         public void setGitignore_template(String gitignore_template) {
             this.gitignore_template = gitignore_template;
+        }
+        public String getOwnerName() {
+            return ownerName;
+        }
+        public void setOwnerName(String ownerName) {
+            this.ownerName = ownerName;
         }
     }

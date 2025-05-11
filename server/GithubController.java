@@ -1,22 +1,38 @@
 package com.example.gitbackend.controllers;
 import com.example.gitbackend.entities.AddCollaboratorRequest;
+import com.example.gitbackend.entities.Commit;
+import com.example.gitbackend.entities.RepositoryEntity;
+import com.example.gitbackend.repos.CommitRepository;
+import com.example.gitbackend.repos.repositoryRepository;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
+import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.server.ResponseStatusException;
 import reactor.core.publisher.Mono;
 import  com.example.gitbackend.entities.CreateRepoRequest;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+import java.util.logging.Logger;
+import java.util.*;
+@Slf4j
+
 
 @RestController
 @RequestMapping("/api/github")
 public class GithubController {
-
+    @Autowired
+    private CommitRepository commitRepository;
+    @Autowired
+    private repositoryRepository repo;
     private final WebClient webClient;
 
     // Inject your GitHub token here (or get it from a service)
@@ -31,6 +47,7 @@ public class GithubController {
     public Mono<String> createRepo(@RequestBody CreateRepoRequest request) {
         ObjectMapper mapper = new ObjectMapper();
         try {
+            // For debugging: print the payload being sent to GitHub
             System.out.println(mapper.writeValueAsString(new GithubRepoPayload(request)));
         } catch (Exception e) {
             e.printStackTrace();
@@ -44,7 +61,52 @@ public class GithubController {
                 .contentType(MediaType.APPLICATION_JSON)
                 .bodyValue(new GithubRepoPayload(request))
                 .retrieve()
-                .bodyToMono(String.class);
+                .bodyToMono(String.class)
+                .doOnSuccess(response -> {
+                    // Save repo info to DB
+                    RepositoryEntity repoEntity = new RepositoryEntity();
+                    repoEntity.setRepoName(request.getName());
+                    repoEntity.setOwnerName(request.getOwnerName());
+                    repoEntity.setCreationDate(new Date());
+                    repo.save(repoEntity);
+                    try {
+                        Thread.sleep(10000); // 3 seconds
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+
+                    // Register webhook for the new repo
+                    String webhookUrl = "https://sweet-rocks-look.loca.lt/api/github/webhook";// <-- Replace with your tunnel or prod URL
+                    log.info(webhookUrl);
+                    registerWebhookForRepo(request.getOwnerName(), request.getName(), webhookUrl, githubToken);
+                });
+    }
+
+    // Place this OUTSIDE the createRepo method!
+    public void registerWebhookForRepo(String owner, String repo, String webhookUrl, String githubToken) {
+        String url = "https://api.github.com/repos/" + owner + "/" + repo + "/hooks";
+
+        Map<String, Object> config = new HashMap<>();
+        config.put("url", webhookUrl);
+        config.put("content_type", "json");
+        // Optionally: config.put("secret", "your-secret");
+
+        Map<String, Object> body = new HashMap<>();
+        body.put("name", "web");
+        body.put("active", true);
+        body.put("events", Arrays.asList("push"));
+        body.put("config", config);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setBearerAuth(githubToken);
+        headers.set("Accept", "application/vnd.github+json");
+
+        HttpEntity<Map<String, Object>> entity = new HttpEntity<>(body, headers);
+
+        RestTemplate restTemplate = new RestTemplate();
+        ResponseEntity<String> response = restTemplate.postForEntity(url, entity, String.class);
+
+        // Optionally, check response.getStatusCode() and handle errors
     }
 
     // Helper class to map to GitHub's expected payload
@@ -58,14 +120,18 @@ public class GithubController {
         public Boolean auto_init; // for README
         public String gitignore_template; // for .gitignore
 
+        // This field is for your own use, not sent to GitHub
+        public String ownerName;
+
         public GithubRepoPayload(CreateRepoRequest req) {
             this.name = req.getName();
             this.description = req.getDescription();
             this.homepage = "https://github.com";
-            this.privateRepo = req.isPrivate(); // Make sure this is a boolean
+            this.privateRepo = req.isPrivate();
             this.is_template = true;
-            this.auto_init = req.isAuto_init(); // <-- now correct
-            this.gitignore_template = req.getGitignore_template(); // <-- now correct
+            this.auto_init = req.isAuto_init();
+            this.gitignore_template = req.getGitignore_template();
+            this.ownerName = req.getOwnerName(); // For your own use
         }
     }
     @PostMapping("/add-collaborator")
@@ -104,6 +170,47 @@ public class GithubController {
                 .retrieve()
                 .bodyToMono(String.class);
     }
+
+
+
+
+        @PostMapping("/register-webhook")
+        public ResponseEntity<String> registerWebhook(
+                @RequestParam String owner,
+                @RequestParam String repo,
+                @RequestParam String webhookUrl,
+                @RequestParam(required = false) String secret) {
+
+            String url = "https://api.github.com/repos/" + owner + "/" + repo + "/hooks";
+
+            Map<String, Object> config = new HashMap<>();
+            config.put("url", webhookUrl);
+            config.put("content_type", "json");
+            if (secret != null && !secret.isEmpty()) {
+                config.put("secret", secret);
+            }
+
+            Map<String, Object> body = new HashMap<>();
+            body.put("name", "web");
+            body.put("active", true);
+            body.put("events", Arrays.asList("push"));
+            body.put("config", config);
+
+            HttpHeaders headers = new HttpHeaders();
+            headers.setBearerAuth(githubToken);
+            headers.set("Accept", "application/vnd.github+json");
+
+            HttpEntity<Map<String, Object>> entity = new HttpEntity<>(body, headers);
+
+            RestTemplate restTemplate = new RestTemplate();
+            ResponseEntity<String> response = restTemplate.postForEntity(url, entity, String.class);
+
+            return ResponseEntity.status(response.getStatusCode()).body(response.getBody());
+        }
+
+
+
+
     @GetMapping("/list-invitations")
     public Mono<String> listInvitations(
             @RequestParam String owner,
@@ -226,20 +333,7 @@ public class GithubController {
                     }
                 });
     }
-    @GetMapping("/repo-contents")
-    public Mono<String> getRepoContents(
-            @RequestParam String owner,
-            @RequestParam String repo,
-            @RequestParam(required = false, defaultValue = "") String path
-    ) {
-        String url = String.format("/repos/%s/%s/contents/%s", owner, repo, path);
-        return webClient.get()
-                .uri(url)
-                .header(HttpHeaders.AUTHORIZATION, "Bearer " + githubToken)
-                .header("Accept", "application/vnd.github+json")
-                .retrieve()
-                .bodyToMono(String.class);
-    }
+
 
     @DeleteMapping("/delete-branch")
     public Mono<String> deleteBranch(
@@ -256,4 +350,163 @@ public class GithubController {
                 .bodyToMono(String.class)
                 .onErrorResume(e -> Mono.just("Error deleting branch: " + e.getMessage()));
     }
+
+    @GetMapping("/branch-commits")
+    public Mono<String> getBranchCommits(
+            @RequestParam String owner,
+            @RequestParam String repo,
+            @RequestParam String branch
+    ) {
+        String url = String.format("/repos/%s/%s/commits?sha=%s", owner, repo, branch);
+
+        return webClient.get()
+                .uri(url)
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + githubToken)
+                .header("Accept", "application/vnd.github+json")
+                .retrieve()
+                .bodyToMono(String.class);
+    }
+
+
+    @PostMapping("/webhook")
+    public ResponseEntity<String> handleWebhook(@RequestBody Map<String, Object> payload) {
+        try {
+            // 1. Parse repo info
+            Map<String, Object> repoMap = (Map<String, Object>) payload.get("repository");
+            String repoName = (String) repoMap.get("name");
+            Map<String, Object> ownerMap = (Map<String, Object>) repoMap.get("owner");
+            String ownerName = (String) ownerMap.get("name"); // or "login" if using GitHub usernames
+
+
+            // 2. Find or create the repository in your DB
+            RepositoryEntity repoEntity = repo.findByRepoNameAndOwnerName(repoName, ownerName);
+            if (repoEntity == null) {
+                repoEntity = new RepositoryEntity();
+                repoEntity.setRepoName(repoName);
+                repoEntity.setOwnerName(ownerName);
+                repoEntity.setCreationDate(new Date());
+                repo.save(repoEntity);
+            }
+
+            // 3. Get branch name
+            String ref = (String) payload.get("ref"); // e.g., "refs/heads/main"
+            String branch = ref != null ? ref.replace("refs/heads/", "") : null;
+
+            // 4. Save each commit
+            List<Map<String, Object>> commits = (List<Map<String, Object>>) payload.get("commits");
+            for (Map<String, Object> commit : commits) {
+                Commit entity = new Commit();
+                entity.setSha((String) commit.get("id"));
+                entity.setBranch(branch);
+                entity.setMessage((String) commit.get("message"));
+                entity.setDate((String) commit.get("timestamp"));
+
+                Map<String, Object> author = (Map<String, Object>) commit.get("author");
+                if (author != null) {
+                    entity.setAuthorName((String) author.get("name"));
+                    entity.setAuthorLogin((String) author.get("username"));
+                }
+                entity.setRepository(repoEntity); // Link to repo
+
+                commitRepository.save(entity);
+            }
+
+            return ResponseEntity.ok("Commits saved from webhook");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(500).body("Error processing webhook");
+        }
+    }
+
+    @GetMapping("/user-repos")
+    public Mono<String> getUserRepos(@RequestParam String username) {
+        String url = String.format("/users/%s/repos?sort=created&direction=desc", username);
+        return webClient.get()
+                .uri(url)
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + githubToken)
+                .header("Accept", "application/vnd.github+json")
+                .retrieve()
+                .bodyToMono(String.class);
+    }
+    @GetMapping("/repo-contents")
+    public ResponseEntity<?> getRepoContents(@RequestParam String owner,
+                                             @RequestParam String repo,
+                                             @RequestParam(required = false) String path,
+                                             @RequestParam(required = false, defaultValue = "main") String branch) {
+        try {
+            String encodedPath = URLEncoder.encode(path == null ? "" : path, StandardCharsets.UTF_8);
+            String url = String.format("https://api.github.com/repos/%s/%s/contents/%s?ref=%s",
+                    owner, repo, encodedPath, branch); // ✅ this is the key line
+
+            WebClient client = WebClient.create();
+            String json = client.get()
+                    .uri(url)
+                    .header(HttpHeaders.AUTHORIZATION, "Bearer " + githubToken)
+                    .header(HttpHeaders.ACCEPT, "application/vnd.github+json")
+                    .retrieve()
+                    .bodyToMono(String.class)
+                    .block();
+
+            ObjectMapper mapper = new ObjectMapper();
+            return ResponseEntity.ok(mapper.readTree(json));
+
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Error fetching contents: " + e.getMessage());
+        }
+    }
+    @GetMapping("/latest-commit")
+    public ResponseEntity<?> getLatestCommit(
+            @RequestParam String owner,
+            @RequestParam String repo,
+            @RequestParam String path,
+            @RequestParam String branch) {
+
+        String url = String.format("https://api.github.com/repos/%s/%s/commits?path=%s&sha=%s&per_page=1",
+                owner, repo, URLEncoder.encode(path, StandardCharsets.UTF_8), branch);
+
+        try {
+            WebClient client = WebClient.create();
+            String json = client.get()
+                    .uri(url)
+                    .header(HttpHeaders.AUTHORIZATION, "Bearer " + githubToken)
+                    .header(HttpHeaders.ACCEPT, "application/vnd.github+json")
+                    .retrieve()
+                    .bodyToMono(String.class)
+                    .block();
+
+            ObjectMapper mapper = new ObjectMapper();
+            return ResponseEntity.ok(mapper.readTree(json));
+
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Error fetching commit: " + e.getMessage());
+        }
+    }
+    @GetMapping("/latest-repo-commit")
+    public ResponseEntity<?> getLatestRepoCommit(
+            @RequestParam String owner,
+            @RequestParam String repo,
+            @RequestParam String branch) {
+
+
+        String url = String.format("https://api.github.com/repos/%s/%s/commits?sha=%s&per_page=1",
+                owner, repo, branch);
+
+        try {
+            WebClient client = WebClient.create();
+            String json = client.get()
+                    .uri(url)
+                    .header(HttpHeaders.AUTHORIZATION, "Bearer " + githubToken)
+                    .header(HttpHeaders.ACCEPT, "application/vnd.github+json")
+                    .retrieve()
+                    .bodyToMono(String.class)
+                    .block();
+
+            ObjectMapper mapper = new ObjectMapper();
+            return ResponseEntity.ok(mapper.readTree(json));
+
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Error fetching latest repo commit: " + e.getMessage());
+        }
+    }
+
 }
