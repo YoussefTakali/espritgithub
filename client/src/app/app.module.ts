@@ -10,14 +10,17 @@ import { SidebarComponent } from './shared/sidebar/sidebar.component';
 import { DashboardComponent } from './pages/dashboard/dashboard.component';
 import { AssignmentcardComponent } from './components/assignmentcard/assignmentcard.component';
 import { StarcardComponent } from './components/starcard/starcard.component';
-import { LucideAngularModule, BookOpenText, GitCommit, Calendar, GraduationCap } from 'lucide-angular';
+import { LucideAngularModule, BookOpenText, Calendar, GraduationCap } from 'lucide-angular';
 import { ActivityComponent } from './components/activity/activity.component';
 import { SubmissionsComponent } from './components/submissions/submissions.component';
 import { ProgressComponent } from './components/progress/progress.component';
 import { GradingComponent } from './components/grading/grading.component';
 
 import { initializeKeycloak } from './keycloak/app.init';
-import { KeycloakAngularModule, KeycloakService } from 'keycloak-angular';
+import { KeycloakAngularModule, KeycloakBearerInterceptor, KeycloakService } from 'keycloak-angular';
+import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
+import { NoNavbarLayoutComponent } from './components/layout/no-navbar-layout/no-navbar-layout.component';
+import { GithubTokenInterceptor } from './keycloak/GithubTokenInterceptor';
 
 @NgModule({
   declarations: [
@@ -32,28 +35,41 @@ import { KeycloakAngularModule, KeycloakService } from 'keycloak-angular';
     SubmissionsComponent,
     ProgressComponent,
     GradingComponent,
+    NoNavbarLayoutComponent,
+
   ],
   imports: [
     BrowserModule,
     KeycloakAngularModule,
     AppRoutingModule,
+    HttpClientModule,
 
 
     AppRoutingModule,
     LucideAngularModule.pick({ 
       BookOpenText, 
-      GitCommit, 
+   //   GitCommit, 
       Calendar, 
       GraduationCap 
     })
   ],
-  providers: [
+ providers: [
     {
       provide: APP_INITIALIZER,
       useFactory: initializeKeycloak,
       multi: true,
       deps: [KeycloakService],
-    }
+    },
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: KeycloakBearerInterceptor,
+      multi: true,
+    },
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: GithubTokenInterceptor, // Ajouter l'intercepteur GitHub
+      multi: true,
+    },
   ],
   
 

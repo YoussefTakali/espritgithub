@@ -29,6 +29,10 @@ export class NavbarComponent {
   logout(): void {
     this.keycloakService.logout(window.location.origin);
   }
+  editProfile(): void {
+    const keycloakAccountUrl = this.keycloakService.getKeycloakInstance().createAccountUrl();
+    window.location.href = keycloakAccountUrl;
+  }
 
 }
   
