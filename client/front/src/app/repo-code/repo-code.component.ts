@@ -1,6 +1,8 @@
 import { Component } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router, ActivatedRoute } from '@angular/router';
+import { Observable, of } from 'rxjs';
+import { map, catchError } from 'rxjs/operators';
 @Component({
   selector: 'app-repo-code',
   templateUrl: './repo-code.component.html',
@@ -22,8 +24,10 @@ ownerName:string="";
   path: string = '';
   contents: any[] = [];
   isFile: boolean = false;
-  fileContent: string = '';
+  fileContent: string = ' ';
   latestCommitBanner: any = null;
+  count: number = 0;
+
 
   constructor(private router: Router, private route: ActivatedRoute,private http: HttpClient) {}
   goToAccessControl() {
@@ -63,7 +67,7 @@ ownerName:string="";
   this.loadContents();
 
 }
-getLatestRepoCommit() {
+getLatestRepoCommit(): void {
   this.http.get<any>(`/api/github/latest-repo-commit`, {
     params: {
       owner: this.ownerName,
@@ -73,16 +77,41 @@ getLatestRepoCommit() {
   }).subscribe(data => {
     if (Array.isArray(data) && data.length > 0) {
       const commit = data[0];
+  
       this.latestCommitBanner = {
         message: commit.commit.message,
         author: commit.commit.author.name,
         avatarUrl: commit.author?.avatar_url || 'default-avatar.png', // ✅ FIXED
         time: new Date(commit.commit.author.date),
-        sha: commit.sha.substring(0, 7)
+        // Now load the commit count for this path
+        
+        sha: commit.sha.substring(0, 7),
+        count: 1 // Initialize count to 0
+      
       };
     }
   });
 }
+getCommitCount(owner: string, repo: string, path: string, branch: string): Observable<number> {
+  const params: any = {
+    owner: owner,
+    repo: repo,
+    branch: branch
+  };
+
+  if (path) {
+    params.path = path;
+  }
+
+  return this.http.get<{ count: number }>('/api/github/commit-count', { params }).pipe(
+    map(response => response.count),
+    catchError((error: any )=> {
+      console.error('Error fetching commit count:', error);
+      return of(0); // return 0 on error
+    })
+  );
+}
+
 
       
   getCollaborators() {
@@ -127,6 +156,8 @@ getBranches() {
     error => { console.error('Error fetching branches:', error); }
   );
 }
+
+
 showBranchList = false;
 
 toggleBranchList() {
@@ -171,6 +202,8 @@ loadContents(path: string = ''): void {
         }).subscribe(commitData => {
           if (Array.isArray(commitData) && commitData.length > 0) {
             item.latestCommit = commitData[0].commit.message;
+            this.getCommitCount(this.ownerName, this.repoName, item.path, this.selectedBranch).subscribe(count => {
+              item.commitCount = count;  });
           } else {
             item.latestCommit = 'No recent commit';
           }
@@ -201,6 +234,7 @@ loadContents(path: string = ''): void {
     } else if (data && data.content) {
       // It's a file
       this.isFile = true;
+      console.log('File content:', this.isFile);
       this.fileContent = atob(data.content);
 
       if (path.toLowerCase().endsWith('readme.md')) {
@@ -211,6 +245,7 @@ loadContents(path: string = ''): void {
       this.contents = [];
       this.isFile = false;
       this.readmeContent = '';
+      this.fileContent = 'null';
     }
     this.getLatestRepoCommit();
   });

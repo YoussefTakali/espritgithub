@@ -4,6 +4,8 @@
   flex-direction: column;
   align-items: center;
   width: 100%;
+  max-width: 980px;
+  margin: 0 auto;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
 }
 
@@ -32,15 +34,19 @@
 .repo-header {
   width: 100%;
   border-bottom: 1px solid #e1e4e8;
-  padding: 1.5rem 2rem 0.5rem 2rem;
+  padding: 1rem 0 ;
   background: #fff;
   margin-bottom: 16px;
+  padding-left: 20px;  /* shift the content to the right */
+  margin-left: 10px; 
 }
 
 .repo-title {
   font-size: 1.5rem;
   font-weight: 600;
   color: #24292e;
+  margin-left: 16px;
+
 }
 
 /* Repository Navigation Area */
@@ -107,8 +113,11 @@
 }
 
 .branch-item:hover {
-  background-color: #f6f8fa;
+ 
+  background: #ffeaea;
+  color: #e53935;
 }
+
 
 .default-badge {
   background-color: #f1f1f1;
@@ -132,7 +141,7 @@
   align-items: center;
   width: 97,99%;
   margin: 0;
-  border-bottom: none;
+ 
 }
 
 .commit-left {
@@ -278,7 +287,7 @@
   border-radius: 6px;
   font-family: SFMono-Regular, Consolas, "Liberation Mono", Menlo, monospace;
   border: 1px solid #e1e4e8;
-  width: 100%;
+  width: 97,9%;
   overflow-x: auto;
   line-height: 1.5;
   font-size: 12px;
@@ -353,5 +362,30 @@
 
 
 .invite-collab-block button:hover {
-  background-color: #0550af;
+  background-color: #e04344;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 14px rgba(255, 77, 79, 0.4);
+}
+
+
+.back-button {
+  padding: 8px 16px;
+  background-color: #ff4b5c;
+  color:  #f3f4f6;
+  border: none;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: bold;
+  cursor: pointer;
+  margin-left: 85%;
+  margin-top: 20px;	
+  width: 10rem;
+  box-shadow: 0 4px 8px rgba(255, 75, 92, 0.2);
+  transition: all 0.3s ease;
+}
+
+.back-button:hover {
+  background-color: #e04344;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 14px rgba(255, 77, 79, 0.4);
 }

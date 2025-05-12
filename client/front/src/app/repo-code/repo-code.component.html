@@ -48,7 +48,10 @@
         <code class="commit-sha">{{ latestCommitBanner.sha.substring(0, 7) }}</code>
         <span class="commit-time">{{ latestCommitBanner.time | timeAgo }}</span>
         <span class="commit-history">
-          <i class="fas fa-history"></i> {{ latestCommitBanner.count }} Commits
+          <div class="file-commit-info">
+          
+           
+          </div>
         </span>
       </div>
     </div>
@@ -57,6 +60,7 @@
     <div *ngIf="!isFile" class="file-list-container">
       <div class="file-list">
         <div *ngFor="let item of contents" class="file-row" (click)="loadContents(item.path)">
+      
           <div class="file-left">
             <div class="file-icon">
               <span *ngIf="item.type === 'dir'">
@@ -67,7 +71,9 @@
               </span>
               <span *ngIf="item.type !== 'file' && item.type !== 'dir'">❓</span>
             </div>
-            <div class="file-name">{{ item.name }}</div>
+            <div class="file-name">{{ item.name }}
+           
+            </div>
           </div>
           <div class="file-commit" *ngIf="item.latestCommit">{{ item.latestCommit }}</div>
         </div>
@@ -75,16 +81,27 @@
     </div>
 
     <!-- File Viewer (when file is selected) -->
-    <div *ngIf="isFile" class="file-viewer">
-      <button class="back-btn" (click)="loadContents(path.substring(0, path.lastIndexOf('/')))">
+    <div *ngIf="isFile === true  " class="file-viewer">
+
+      <button class="back-button" (click)="loadContents(path.substring(0, path.lastIndexOf('/')))">
         ⬅ Back
       </button>
+
       <h3>{{ path }}</h3>
       <pre class="file-content">{{ fileContent }}</pre>
     </div>
+    <div *ngIf="fileContent=== 'null' " class="file-viewer">
+     
+      <button class="back-button" (click)="loadContents(path.substring(0, path.lastIndexOf('/')))">
+        ⬅ Back
+      </button>
+
+      <h3>{{ path }}</h3>
+      <pre class="file-content">the file is empty</pre>
+    </div>
 
     <!-- README Preview -->
-    <div *ngIf="readmeContent" class="readme-preview">
+    <div *ngIf="readmeContent && isFile=== false" class="readme-preview">
       <h3 class="readme-title">README</h3>
       <pre class="readme-box">{{ readmeContent }}</pre>
     </div>

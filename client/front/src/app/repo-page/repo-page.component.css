@@ -1,7 +1,9 @@
 .repo-header {
     border-bottom: 1px solid #e1e4e8;
-    padding: 1.5rem 2rem 0.5rem 2rem;
+    padding: 0.5rem;
     background: #fff;
+margin-left: 16px;
+  
   }
   .repo-title {
     font-size: 1.5rem;
