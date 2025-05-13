@@ -14,6 +14,7 @@ import { ActivityComponent } from './components/activity/activity.component';
 import { SubmissionsComponent } from './components/submissions/submissions.component';
 import { ProgressComponent } from './components/progress/progress.component';
 import { GradingComponent } from './components/grading/grading.component';
+import { ProjectComponent } from './pages/project/project.component';
 
 @NgModule({
   declarations: [
@@ -28,6 +29,7 @@ import { GradingComponent } from './components/grading/grading.component';
     SubmissionsComponent,
     ProgressComponent,
     GradingComponent,
+    ProjectComponent,
   ],
   imports: [
     BrowserModule,
