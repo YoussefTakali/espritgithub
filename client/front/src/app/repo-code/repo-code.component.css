@@ -377,7 +377,7 @@
   font-size: 14px;
   font-weight: bold;
   cursor: pointer;
-  margin-left: 85%;
+  margin-left: 80%;
   margin-top: 20px;	
   width: 10rem;
   box-shadow: 0 4px 8px rgba(255, 75, 92, 0.2);
@@ -388,4 +388,17 @@
   background-color: #e04344;
   transform: translateY(-1px);
   box-shadow: 0 6px 14px rgba(255, 77, 79, 0.4);
+}
+/* Image File Display */
+.file-viewer img {
+  display: block;
+  max-width: 100%;
+
+  margin: 16px auto;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  object-fit: contain;
+  background-color: #fafafa;
+  padding: 8px;
 }
