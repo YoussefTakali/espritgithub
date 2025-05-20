@@ -8,6 +8,9 @@ import { Observable, tap } from 'rxjs';
 export class ProjectserviceService {
 
   constructor(private http: HttpClient) { }
+createProject(projectData: any) {
+  return this.http.post('http://localhost:8080/api/projects/add', projectData);
+}
 
   getProjectsByTeacher(): Observable<any> {
     const userId = localStorage.getItem('id');

@@ -22,6 +22,7 @@ import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { GithubTokenInterceptor } from './keycloak/GithubTokenInterceptor';
 import { CommonModule } from '@angular/common';
 import { ProjectsComponent } from './pages/projects/projects.component';
+import { FormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [
@@ -41,6 +42,7 @@ import { ProjectsComponent } from './pages/projects/projects.component';
 
   ],
   imports: [
+    FormsModule,
     BrowserModule,
     KeycloakAngularModule,
     AppRoutingModule,

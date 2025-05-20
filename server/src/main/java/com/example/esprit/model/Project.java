@@ -32,6 +32,8 @@ public class Project {
     @Column(name = "created_date")
     private LocalDateTime createdDate;
     
+        @Column(name = "due_date")
+    private LocalDateTime dueDate;
     @Enumerated(EnumType.STRING)
     private ProjectStatus status;
     
