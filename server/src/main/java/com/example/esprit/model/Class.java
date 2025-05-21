@@ -1,11 +1,14 @@
 package com.example.esprit.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-
+import lombok.ToString;
 import jakarta.persistence.*;
 import java.util.Set;
 
@@ -15,6 +18,8 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@EqualsAndHashCode(exclude = {"teacherAssignments", "studentEnrollments", "projects"})
+@ToString(exclude = {"teacherAssignments", "studentEnrollments", "projects"})
 public class Class {
     
     @Id
@@ -41,7 +46,8 @@ public class Class {
     @JsonIgnore  // ignore to avoid serialization issues
     private Set<StudentClassEnrollment> studentEnrollments;
     
-    @OneToMany(mappedBy = "associatedClass")
-    @JsonIgnore  // ignore projects to avoid recursive serialization
+    @ManyToMany(mappedBy = "associatedClasses")
+        @JsonIgnoreProperties("associatedClasses") // Add this to break the cycle
+
     private Set<Project> projects;
 }

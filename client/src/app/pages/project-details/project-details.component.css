@@ -1,0 +1,30 @@
+.project-detail-container {
+  display: flex;
+}
+
+.sidebar {
+  width: 300px;
+  border-right: 1px solid #ddd;
+  padding: 10px;
+}
+
+.class-header, .group-header {
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.groups-list, .students-list {
+  margin-left: 15px;
+  list-style: none;
+  padding-left: 10px;
+}
+
+.arrow {
+  margin-left: 10px;
+}
+
+button {
+  margin-left: 8px;
+}

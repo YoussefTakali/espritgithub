@@ -1,5 +1,6 @@
 package com.example.esprit.controller;
 
+import com.example.esprit.dto.ProjectDTO;
 import com.example.esprit.model.Project;
 import com.example.esprit.service.ProjectService;
 import org.springframework.http.ResponseEntity;
@@ -24,17 +25,25 @@ public class ProjectController {
         return ResponseEntity.ok(savedProject);
     }
 
-    // Get projects by teacher ID
+    // Get projects by teacher ID - updated to return DTOs
     @GetMapping("/by-teacher/{teacherId}")
-    public ResponseEntity<List<Project>> getProjectsByTeacher(@PathVariable String teacherId) {
-        List<Project> projects = projectService.getProjectsByTeacher(teacherId);
+    public ResponseEntity<List<ProjectDTO>> getProjectsByTeacher(@PathVariable String teacherId) {
+        List<ProjectDTO> projects = projectService.getProjectsByTeacher(teacherId);
         return ResponseEntity.ok(projects);
     }
 
-    // Get projects by class ID
+    // Get projects by class ID - updated to return DTOs
     @GetMapping("/by-class/{classId}")
-    public ResponseEntity<List<Project>> getProjectsByClass(@PathVariable Long classId) {
-        List<Project> projects = projectService.getProjectsByClass(classId);
+    public ResponseEntity<List<ProjectDTO>> getProjectsByClass(@PathVariable Long classId) {
+        List<ProjectDTO> projects = projectService.getProjectsByClass(classId);
         return ResponseEntity.ok(projects);
+    }
+
+    // Additional endpoint to get project by ID
+    @GetMapping("/{id}")
+    public ResponseEntity<ProjectDTO> getProjectById(@PathVariable Long id) {
+        return projectService.getProjectById(id)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 }

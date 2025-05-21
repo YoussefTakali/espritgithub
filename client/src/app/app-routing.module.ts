@@ -4,6 +4,7 @@ import { MainLayoutComponent } from './layout/main-layout/main-layout.component'
 import { DashboardComponent } from './pages/dashboard/dashboard.component';
 import { AuthGuard } from './keycloak/app.guard';
 import { ProjectsComponent } from './pages/projects/projects.component';
+import { ProjectDetailsComponent } from './pages/project-details/project-details.component';
 
 const routes: Routes = [
   {
@@ -15,6 +16,8 @@ const routes: Routes = [
       {path:'', redirectTo:'dashboard',pathMatch:'full'},
       { path:'dashboard',component:DashboardComponent},
       { path:'projects',component:ProjectsComponent},
+      { path:'project-details/:id',component:ProjectDetailsComponent},
+
     ]
   }
   

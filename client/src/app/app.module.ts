@@ -23,6 +23,7 @@ import { GithubTokenInterceptor } from './keycloak/GithubTokenInterceptor';
 import { CommonModule } from '@angular/common';
 import { ProjectsComponent } from './pages/projects/projects.component';
 import { FormsModule } from '@angular/forms';
+import { ProjectDetailsComponent } from './pages/project-details/project-details.component';
 
 @NgModule({
   declarations: [
@@ -38,6 +39,7 @@ import { FormsModule } from '@angular/forms';
     ProgressComponent,
     GradingComponent,
     ProjectsComponent,
+    ProjectDetailsComponent,
 
 
   ],

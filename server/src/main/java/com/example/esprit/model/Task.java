@@ -1,12 +1,9 @@
 package com.example.esprit.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-
+import lombok.*;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.Set;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -45,10 +42,12 @@ public class Task {
     @JsonIgnore
     private Project project;
     
-    // Relationships
-    @OneToMany(mappedBy = "task")
-    private Set<TaskStudentAssignment> studentAssignments;
+    // New task assignments (replaces studentAssignments)
+    @OneToMany(mappedBy = "task", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
+    private Set<TaskAssignment> assignments = new HashSet<>();
     
     @OneToMany(mappedBy = "task", cascade = CascadeType.ALL)
-    private Set<Submission> submissions;
+    @Builder.Default
+    private Set<Submission> submissions = new HashSet<>();
 }

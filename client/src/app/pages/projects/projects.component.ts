@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ProjectserviceService } from 'src/app/services/projectservice.service';
+import { ClassService } from 'src/app/services/class.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-projects',
@@ -15,28 +17,48 @@ export class ProjectsComponent implements OnInit {
   searchTerm: string = '';
   statusFilter: string = '';
 
-  constructor(private projectService: ProjectserviceService) {}
+  showAddModal = false;
+
+  newProject = {
+    name: '',
+    description: '',
+    dueDate: '',
+    dueTime: '',
+    status: 'ACTIVE',
+    associatedClasses: [] as any[] // Changed to array for multiple classes
+  };
+
+  classOptions: any[] = [];
+  selectedClasses: any[] = []; // For form selection
+
+  constructor(
+    private projectService: ProjectserviceService,
+    private classService: ClassService,
+    private router: Router
+  ) {}
 
   ngOnInit() {
     this.fetchProjects();
+    this.loadClasses();
   }
 
   fetchProjects() {
     this.projectService.getProjectsByTeacher().subscribe({
       next: (backendProjects) => {
         this.projects = backendProjects.map((proj: any) => ({
+          id: proj.id,
           title: proj.name,
-          subtitle: proj.associatedClass?.name || 'No class',
+          subtitle: this.formatClassNames(proj.associatedClasses), // Updated to handle multiple classes
           date: new Date(proj.createdDate).toLocaleDateString(),
-          progress: 50, // Replace with actual progress if available
+          progress: 50,
           remainingDays: this.getRemainingDays(proj.dueDate),
-          status: proj.status || 'inProgress', // Assume a default if not provided
           users: [
             'https://i.pravatar.cc/30?img=1',
             'https://i.pravatar.cc/30?img=2'
-          ]
+          ],
+          associatedClasses: proj.associatedClasses // Keep the classes data
         }));
-        this.applyFilters(); // Apply filters after loading
+        this.applyFilters();
       },
       error: (err) => {
         console.error('Error fetching projects', err);
@@ -45,17 +67,54 @@ export class ProjectsComponent implements OnInit {
     });
   }
 
+  // Helper to format multiple class names
+  formatClassNames(classes: any[]): string {
+    if (!classes || classes.length === 0) return 'No classes';
+    return classes.map(c => c.name).join(', ');
+  }
+
+  loadClasses() {
+    const teacherId = localStorage.getItem('id') || '';
+    if (!teacherId) return;
+    this.classService.getClassesByTeacher().subscribe({
+      next: (classes) => {
+        this.classOptions = classes;
+      },
+      error: (err) => {
+        console.error('Error fetching classes', err);
+      }
+    });
+  }
+
   applyFilters() {
     this.filteredProjects = this.projects.filter(project => {
-      const matchesSearch =
-        project.title.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
-        project.subtitle.toLowerCase().includes(this.searchTerm.toLowerCase());
-
-      const matchesStatus =
-        this.statusFilter ? project.status === this.statusFilter : true;
-
-      return matchesSearch && matchesStatus;
+      const matchesTitle = project.title.toLowerCase().includes(this.searchTerm.toLowerCase());
+      const matchesClass = project.subtitle.toLowerCase().includes(this.searchTerm.toLowerCase());
+      const matchesStatus = this.statusFilter ? project.status === this.statusFilter : true;
+      return (matchesTitle || matchesClass) && matchesStatus;
     });
+  }
+
+  openAddProjectModal() {
+    this.showAddModal = true;
+    this.selectedClasses = []; // Reset selected classes when opening modal
+  }
+
+  closeAddProjectModal() {
+    this.showAddModal = false;
+    this.resetNewProject();
+  }
+
+  resetNewProject() {
+    this.newProject = {
+      name: '',
+      description: '',
+      dueDate: '',
+      dueTime: '',
+      status: 'ACTIVE',
+      associatedClasses: []
+    };
+    this.selectedClasses = [];
   }
 
   getRemainingDays(targetDate: string): number {
@@ -65,77 +124,46 @@ export class ProjectsComponent implements OnInit {
     const diffInDays = Math.ceil(diffInMs / (1000 * 60 * 60 * 24));
     return Math.max(0, diffInDays);
   }
-  showAddModal: boolean = false;
 
-newProject: any = {
-  name: '',
-  description: '',
-  dueDate: '',
-  dueTime:'',
-  status: 'ACTIVE',
-  createdBy: '61eb987b-d7ea-487d-b42d-9f9e4951af05',
-  associatedClass: {
-    id: 1
+  combineDateAndTime(date: string, time: string): string {
+    return `${date}T${time}:00`;
   }
-};
 
-classOptions: any[] = []; // Replace with actual classes from backend
-
-openAddProjectModal() {
-  this.showAddModal = true;
-}
-
-closeAddProjectModal() {
-  this.showAddModal = false;
-  this.resetForm();
-}
-
-resetForm() {
-  this.newProject = {
-    name: '',
-    description: '',
-    dueDate: '',
-    dueTime:'',
-    status: 'ACTIVE',
-    createdBy: '61eb987b-d7ea-487d-b42d-9f9e4951af05',
-    associatedClass: {
-      id: 1
+  // Handle class selection changes
+  onClassSelectionChange(event: any, classItem: any) {
+    if (event.target.checked) {
+      this.selectedClasses.push(classItem.id);
+    } else {
+      this.selectedClasses = this.selectedClasses.filter(id => id !== classItem.id);
     }
-  };
+  }
+
+  submitNewProject() {
+    const createdById = localStorage.getItem('id') || '';
+    const combinedDateTime = this.combineDateAndTime(this.newProject.dueDate, this.newProject.dueTime);
+
+    const projectPayload = {
+      name: this.newProject.name,
+      description: this.newProject.description,
+      createdDate: new Date().toISOString(),
+      dueDate: combinedDateTime,
+      status: this.newProject.status,
+      createdBy: createdById,
+      associatedClasses: this.selectedClasses.map(id => ({ id })) // Map to array of class objects
+    };
+
+    this.projectService.createProject(projectPayload).subscribe({
+      next: (response) => {
+        console.log('Project created:', response);
+        this.closeAddProjectModal();
+        this.fetchProjects();
+      },
+      error: (error) => {
+        console.error('Create project error:', error);
+      }
+    });
+  }
+  goToProjectDetails(projectId: string) {
+    this.router.navigate(['/project-details', projectId]);
+  }
 }
-
-submitNewProject() {
-  const createdById = localStorage.getItem('id') || '';
-
-  // Combine date + time (e.g. '2025-05-21' + '14:30') into ISO datetime string
-  const combinedDateTime = this.combineDateAndTime(this.newProject.dueDate, this.newProject.dueTime);
-
-  const projectPayload = {
-    name: this.newProject.name,
-    description: this.newProject.description,
-    createdDate: new Date().toISOString(),   // current datetime
-    dueDate: combinedDateTime,                // combined ISO string
-    status: this.newProject.status,
-    createdBy: createdById,
-    associatedClass: {
-      id: 1
-    }
-  };
-
-  this.projectService.createProject(projectPayload).subscribe({
-    next: (response) => {
-      console.log('Project created:', response);
-      this.closeAddProjectModal();
-      this.fetchProjects();
-    },
-    error: (error) => {
-      console.error('Create project error:', error);
-    }
-  });
-}
-
-combineDateAndTime(date: string, time: string): string {
-  // date: "2025-05-21", time: "14:30"
-  // Return ISO string "2025-05-21T14:30:00"
-  return `${date}T${time}:00`;
-}}

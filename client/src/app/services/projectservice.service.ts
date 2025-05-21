@@ -21,4 +21,13 @@ createProject(projectData: any) {
         })
       );
   }
+  getProjectById(projectId: number): Observable<any> {
+  return this.http.get<any>(`http://localhost:8080/api/projects/${projectId}`)
+    .pipe(
+      tap(response => {
+        console.log('Fetched project:', response);
+      })
+    );
+}
+
 }

@@ -1,0 +1,43 @@
+<div class="project-detail-container">
+
+  <aside class="sidebar">
+  <h3>Classes</h3>
+
+  <div *ngIf="!projectData?.associatedClasses?.length">
+    <p>No classes exist for this project.</p>
+    <button (click)="addClass()">+ Add Class</button>
+  </div>
+
+  <ul *ngIf="projectData?.associatedClasses?.length">
+    <li *ngFor="let classItem of projectData.associatedClasses">
+      <div class="class-header" (click)="toggleClass(classItem.id)">
+        <span>{{ classItem.name }}</span>
+        <button (click)="addGroup(classItem.id); $event.stopPropagation()">+ Group</button>
+        <span class="arrow">{{ expandedClasses.has(classItem.id) ? '▼' : '▶' }}</span>
+      </div>
+
+      <!-- Groups list placeholder -->
+      <ul *ngIf="expandedClasses.has(classItem.id)" class="groups-list">
+        <li *ngIf="!classItem.groups || classItem.groups.length === 0">
+          <p>No groups available for this class.</p>
+          <!-- You can add a button to add groups here -->
+        </li>
+        <li *ngFor="let group of classItem.groups">
+          <!-- group details like before -->
+        </li>
+      </ul>
+    </li>
+  </ul>
+</aside>
+
+  <main class="project-content">
+  <div><strong>ID:</strong> {{ projectData?.id }}</div>
+  <div><strong>Name:</strong> {{ projectData?.name }}</div>
+  <div><strong>Description:</strong> {{ projectData?.description }}</div>
+  <div><strong>Created Date:</strong> {{ projectData?.createdDate | date:'medium' }}</div>
+  <div><strong>Due Date:</strong> {{ projectData?.dueDate | date:'medium' }}</div>
+  <div><strong>Status:</strong> {{ projectData?.status }}</div>
+  <div><strong>Created By:</strong> {{ projectData?.createdBy }}</div>
+    <!-- You can add more project info here -->
+  </main>
+</div>

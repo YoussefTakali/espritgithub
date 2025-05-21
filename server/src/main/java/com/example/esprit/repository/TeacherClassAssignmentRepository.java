@@ -10,8 +10,8 @@ import java.util.Optional;
 
 @Repository
 public interface TeacherClassAssignmentRepository extends JpaRepository<TeacherClassAssignment, Long> {
-    List<TeacherClassAssignment> findByTeacherId(String teacherId);
-    List<TeacherClassAssignment> findByTeachingClassId(Long classId);
-    Optional<TeacherClassAssignment> findByTeacherIdAndTeachingClassId(String teacherId, Long classId);
-    void deleteByTeacherIdAndTeachingClassId(String teacherId, Long classId);
+    // List<TeacherClassAssignment> findByTeacherId(String teacherId);
+    // List<TeacherClassAssignment> findByTeachingClassId(Long classId);
+    // Optional<TeacherClassAssignment> findByTeacherIdAndTeachingClassId(String teacherId, Long classId);
+    // void deleteByTeacherIdAndTeachingClassId(String teacherId, Long classId);
 }

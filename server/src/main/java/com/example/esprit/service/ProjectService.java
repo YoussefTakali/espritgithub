@@ -1,8 +1,11 @@
 package com.example.esprit.service;
 
+import com.example.esprit.dto.ProjectDTO;
 import com.example.esprit.model.Project;
 import com.example.esprit.repository.ProjectRepository;
+import com.example.esprit.util.ProjectMapper;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -16,23 +19,24 @@ public class ProjectService {
         this.projectRepository = projectRepository;
     }
 
-    // Save a new project
+    @Transactional
     public Project addProject(Project project) {
         return projectRepository.save(project);
     }
 
-    // Find projects by teacher ID
-    public List<Project> getProjectsByTeacher(String teacherId) {
-        return projectRepository.findByCreatedBy(teacherId);
+    @Transactional(readOnly = true)
+    public List<ProjectDTO> getProjectsByTeacher(String teacherId) {
+        return ProjectMapper.toDtoList(projectRepository.findByCreatedBy(teacherId));
     }
 
-    // Find projects by class ID
-    public List<Project> getProjectsByClass(Long classId) {
-        return projectRepository.findByAssociatedClassId(classId);
+    @Transactional(readOnly = true)
+    public List<ProjectDTO> getProjectsByClass(Long classId) {
+        return ProjectMapper.toDtoList(projectRepository.findByAssociatedClassesId(classId));
     }
 
-    // Optional: find by project ID
-    public Optional<Project> getProjectById(Long id) {
-        return projectRepository.findById(id);
+    @Transactional(readOnly = true)
+    public Optional<ProjectDTO> getProjectById(Long id) {
+        return projectRepository.findById(id)
+                .map(ProjectMapper::toDto);
     }
 }

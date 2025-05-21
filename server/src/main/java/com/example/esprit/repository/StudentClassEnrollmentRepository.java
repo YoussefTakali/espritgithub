@@ -10,7 +10,7 @@ import java.util.Optional;
 
 @Repository
 public interface StudentClassEnrollmentRepository extends JpaRepository<StudentClassEnrollment, Long> {
-    List<StudentClassEnrollment> findByEnrolledClassId(Long classId);
-    Optional<StudentClassEnrollment> findByStudentId(String studentId);
-    void deleteByStudentId(String studentId);
+    // List<StudentClassEnrollment> findByEnrolledClassId(Long classId);
+    // Optional<StudentClassEnrollment> findByStudentId(String studentId);
+    // void deleteByStudentId(String studentId);
 }
