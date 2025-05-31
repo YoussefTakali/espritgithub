@@ -8,4 +8,5 @@ import lombok.Data;
 public class ClassDTO {
     private Long id;
     private String name;
+    public ClassDTO(){}
 }

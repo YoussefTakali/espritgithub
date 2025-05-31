@@ -29,5 +29,7 @@ createProject(projectData: any) {
       })
     );
 }
-
+  createTask(taskData: any): Observable<any> {
+    return this.http.post<any>(`http://localhost:8080/api/tasks`, taskData);
+  }
 }

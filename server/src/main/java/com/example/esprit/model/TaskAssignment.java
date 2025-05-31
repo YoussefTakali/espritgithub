@@ -1,6 +1,9 @@
 package com.example.esprit.model;
 
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -23,12 +26,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class TaskAssignment {
-    public enum AssignmentScope {
-        PROJECT,    // All groups in all classes
-        CLASS,      // All groups in one class
-        GROUP,      // Specific group
-        INDIVIDUAL  // Specific student
-    }
+
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -36,6 +34,7 @@ public class TaskAssignment {
     
     @ManyToOne
     @JoinColumn(name = "task_id", nullable = false)
+    @JsonBackReference
     private Task task;
     
     @Enumerated(EnumType.STRING)
@@ -44,14 +43,17 @@ public class TaskAssignment {
     // Only used when scope = CLASS or GROUP
     @ManyToOne
     @JoinColumn(name = "class_id")
+    @JsonIgnore
     private Class classe;
     
     // Only used when scope = GROUP
     @ManyToOne
     @JoinColumn(name = "group_id")
+    @JsonIgnore
     private Group group;
     
     // Only used when scope = INDIVIDUAL
     @Column(name = "student_id")
+    @JsonIgnore
     private String studentId;
 }

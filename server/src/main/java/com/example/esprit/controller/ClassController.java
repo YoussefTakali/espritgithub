@@ -1,7 +1,9 @@
 package com.example.esprit.controller;
 
-import com.example.esprit.model.Class;
+import com.example.esprit.dto.ClassDTOResponse;
 import com.example.esprit.service.ClassService;
+
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -16,9 +18,10 @@ public class ClassController {
         this.classService = classService;
     }
 
-    @GetMapping("/by-teacher/{teacherId}")
-    public List<Class> getClassesByTeacherId(@PathVariable String teacherId) {
-        return classService.getClassesByTeacherId(teacherId);
+   @GetMapping("/by-teacher/{teacherId}")
+    public ResponseEntity<List<ClassDTOResponse>> getClassesWithProjectsByTeacher(@PathVariable String teacherId) {
+        List<ClassDTOResponse> response = classService.getClassesWithProjectsByTeacherId(teacherId);
+        return ResponseEntity.ok(response);
     }
 }
 

@@ -47,7 +47,6 @@ public class Class {
     private Set<StudentClassEnrollment> studentEnrollments;
     
     @ManyToMany(mappedBy = "associatedClasses")
-        @JsonIgnoreProperties("associatedClasses") // Add this to break the cycle
-
+    @JsonIgnoreProperties("associatedClasses") // Add this to break the cycle
     private Set<Project> projects;
 }

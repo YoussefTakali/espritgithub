@@ -1,0 +1,172 @@
+<div class="task-management-container">
+  <!-- Left Sidebar - Tree view -->
+  <div class="sidebar">
+    <h2 class="sidebar-title">Classes & Projects</h2>
+    
+    <div class="tree-view">
+      <div *ngFor="let classe of classTree" class="tree-item">
+        <div class="tree-node class-node">
+          <span class="tree-icon arrow-icon" (click)="toggleClass(classe)">
+            {{ classe.expanded ? '▼' : '▶' }}
+          </span>
+          <span class="tree-icon">🎓</span>
+          <span class="tree-label" (click)="filterByClass(classe)">{{ classe.name }}</span>
+        </div>
+
+        <div *ngIf="classe.expanded" class="tree-children">
+          <div *ngFor="let project of classe.projects" class="tree-item">
+            <div class="tree-node project-node" [class.selected]="selectedProject?.id === project.id">
+              <span class="tree-icon arrow-icon" (click)="toggleProject(project)">
+                {{ project.expanded ? '▼' : '▶' }}
+              </span>
+              <span class="tree-icon">📁</span>
+              <span class="tree-label" (click)="selectProject(project)">{{ project.name }}</span>
+            </div>
+
+            <div *ngIf="project.expanded" class="tree-children">
+              <div *ngFor="let group of project.groups" class="tree-item">
+                <div class="tree-node group-node">
+                  <span class="tree-icon arrow-icon" (click)="toggleGroup(group)">
+                    {{ group.expanded ? '▼' : '▶' }}
+                  </span>
+                  <span class="tree-icon">👥</span>
+                  <span class="tree-label" (click)="filterByGroup(group)">{{ group.name }}</span>
+                </div>
+
+                <div *ngIf="group.expanded" class="tree-children">
+                  <div *ngFor="let studentId of group.memberIds" class="tree-item">
+                    <div class="tree-node student-node">
+                      <span class="tree-icon">👤</span>
+                      <span class="tree-label" (click)="filterByStudent(studentId)">{{ studentId }}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Content - Task list -->
+  <div class="main-content">
+    <div class="content-header">
+      <h1 class="content-title">Tasks for {{ selectedProject?.name || 'All Projects' }}</h1>
+      <div class="header-actions">
+        <div class="search-container">
+          <input type="text" 
+                 placeholder="Search tasks..." 
+                 class="search-input"
+                 [(ngModel)]="searchTerm">
+          <span class="search-icon">🔍</span>
+        </div>
+        <button class="add-task-btn" (click)="addTask()">
+          <span class="plus-icon">+</span>
+          Add Task
+        </button>
+      </div>
+    </div>
+
+    <div class="task-grid">
+      <div *ngFor="let task of filteredTasks" class="task-card">
+        <div class="task-header">
+          <h3 class="task-title">{{ task.title }}</h3>
+          <span class="task-status" [class]="'status-' + task.status.toLowerCase()">
+            {{ task.status }}
+          </span>
+        </div>
+        
+        <p class="task-description">{{ task.description }}</p>
+        
+        <div class="task-meta">
+          <div class="task-assignee">
+            <span class="meta-icon">👤</span>
+            <span>Assigned to: {{ task.assignedTo }}</span>
+          </div>
+          <div class="task-due-date">
+            <span class="meta-icon">📅</span>
+            <span>Due: {{ task.dueDate | date:'M/d/yyyy' }}</span>
+          </div>
+        </div>
+
+        <div class="task-actions">
+          <button class="action-btn edit-btn" (click)="editTask(task)">
+            <span class="action-icon">✏️</span>
+            Edit
+          </button>
+          <button class="action-btn delete-btn" (click)="deleteTask(task)">
+            <span class="action-icon">🗑️</span>
+            Delete
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Add Task Modal -->
+<div class="modal-overlay" *ngIf="showAddTaskModal">
+  <div class="modal-content">
+    <h2 class="modal-title">Add New Task</h2>
+    
+    <form class="task-form" (ngSubmit)="createTask()">
+      <div class="form-group">
+        <label>Task Title</label>
+        <input type="text" class="form-control" [(ngModel)]="newTask.title" name="title" required>
+      </div>
+
+      <div class="form-group">
+        <label>Description</label>
+        <textarea class="form-control" [(ngModel)]="newTask.description" name="description"></textarea>
+      </div>
+
+      <div class="form-section">
+        <h4>Assignment Type</h4>
+        <div class="radio-group">
+          <label>
+            <input type="radio" name="type" [(ngModel)]="newTask.type" value="individual"> Individual
+          </label>
+          <label>
+            <input type="radio" name="type" [(ngModel)]="newTask.type" value="group" checked> Group
+          </label>
+          <label>
+            <input type="radio" name="type" [(ngModel)]="newTask.type" value="project"> Project (All Groups)
+          </label>
+          <label>
+            <input type="radio" name="type" [(ngModel)]="newTask.type" value="class"> Class (All Groups in Class)
+          </label>
+        </div>
+      </div>
+
+<!-- Assign To Section (Checkbox List) -->
+<div class="form-section">
+<label for="groupSelect">Assign to Group:</label>
+<select id="groupSelect" [(ngModel)]="newTask.assignedGroups">
+  <option *ngFor="let group of availableGroups" [value]="group.id">
+    {{ group.name }}
+  </option>
+</select>
+</div>
+
+
+      <div class="form-section">
+        <h4>Due Date</h4>
+        <input type="date" class="date-picker" [(ngModel)]="newTask.dueDate" name="dueDate">
+      </div>
+
+      <div class="form-section">
+        <h4>Status</h4>
+        <div class="radio-group">
+          <label>
+            <input type="radio" name="status" [(ngModel)]="newTask.status" value="pending" checked> Pending
+          </label>
+        </div>
+      </div>
+
+      <div class="modal-actions">
+        <button type="button" class="btn cancel-btn" (click)="closeModal()">Cancel</button>
+        <button type="submit" class="btn create-btn">Create Task</button>
+      </div>
+    </form>
+  </div>
+</div>

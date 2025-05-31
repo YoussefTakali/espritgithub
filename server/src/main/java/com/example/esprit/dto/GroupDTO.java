@@ -14,5 +14,8 @@ import java.util.Set;
 public class GroupDTO {
     private Long id;
     private String name;
-    private Set<String> memberIds; // ✅ Match the entity definition
+    private Long projectId;
+    private Long classId;
+    private ClassDTO classe;
+    private Set<String> memberIds;
 }

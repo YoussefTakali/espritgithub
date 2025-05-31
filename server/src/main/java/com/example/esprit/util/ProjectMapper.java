@@ -1,14 +1,17 @@
 package com.example.esprit.util;
 
 import com.example.esprit.dto.ClassDTO;
+import com.example.esprit.dto.GroupDTO;
 import com.example.esprit.dto.ProjectDTO;
 import com.example.esprit.model.Project;
+import com.example.esprit.model.Group;
 import com.example.esprit.model.Class;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 public class ProjectMapper {
 
@@ -25,7 +28,9 @@ public class ProjectMapper {
         dto.setDueDate(project.getDueDate());
         dto.setStatus(project.getStatus());
         dto.setCreatedBy(project.getCreatedBy());
+        dto.setCollaborators(project.getCollaborators());
         dto.setAssociatedClasses(mapClassesToDto(project.getAssociatedClasses()));
+        dto.setGroups(mapGroupsToDto(project.getGroups()));
         
         return dto;
     }
@@ -52,5 +57,21 @@ public class ProjectMapper {
             result.add(new ClassDTO(clazz.getId(), clazz.getName()));
         }
         return result;
+    }
+    
+    private static List<GroupDTO> mapGroupsToDto(Set<Group> groups) {
+        if (groups == null || groups.isEmpty()) {
+            return Collections.emptyList();
+        }
+
+        return groups.stream()
+            .map(group -> GroupDTO.builder()
+                .id(group.getId())
+                .name(group.getName())
+                .projectId(group.getProject() != null ? group.getProject().getId() : null)
+                .classId(group.getClasse() != null ? group.getClasse().getId() : null)
+                .memberIds(group.getMemberIds())
+                .build())
+            .collect(Collectors.toList());
     }
 }

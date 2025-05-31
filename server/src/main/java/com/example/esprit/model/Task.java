@@ -7,6 +7,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 @Entity
 @Table(name = "tasks")
@@ -35,16 +36,16 @@ public class Task {
     private LocalDateTime createdDate;
     
     @Column(name = "created_by", nullable = false)
-    private String createdBy; // Keycloak user ID of the teacher
+    private String createdBy;
     
     @ManyToOne
     @JoinColumn(name = "project_id", nullable = false)
-    @JsonIgnore
     private Project project;
     
     // New task assignments (replaces studentAssignments)
-    @OneToMany(mappedBy = "task", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "task", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @Builder.Default
+    @JsonManagedReference
     private Set<TaskAssignment> assignments = new HashSet<>();
     
     @OneToMany(mappedBy = "task", cascade = CascadeType.ALL)

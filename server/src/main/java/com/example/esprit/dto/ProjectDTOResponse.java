@@ -1,21 +1,15 @@
 package com.example.esprit.dto;
 
-import com.example.esprit.model.ProjectStatus;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
 
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
-public class ProjectDTO {
-    
+import com.example.esprit.model.ProjectStatus;
+
+import lombok.Builder;
+import lombok.Data;
+@Data @Builder
+public class ProjectDTOResponse {
     private Long id;
     private String name;
     private String description;
@@ -24,6 +18,5 @@ public class ProjectDTO {
     private ProjectStatus status;
     private String createdBy;
     private Set<String> collaborators;
-    private List<ClassDTO> associatedClasses;
-    private List<GroupDTO> groups; 
+    private List<GroupDTOResponse> groups;
 }

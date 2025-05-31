@@ -5,6 +5,7 @@ import { DashboardComponent } from './pages/dashboard/dashboard.component';
 import { AuthGuard } from './keycloak/app.guard';
 import { ProjectsComponent } from './pages/projects/projects.component';
 import { ProjectDetailsComponent } from './pages/project-details/project-details.component';
+import { ClassesComponent } from './pages/classes/classes.component';
 
 const routes: Routes = [
   {
@@ -17,7 +18,7 @@ const routes: Routes = [
       { path:'dashboard',component:DashboardComponent},
       { path:'projects',component:ProjectsComponent},
       { path:'project-details/:id',component:ProjectDetailsComponent},
-
+      {path:'classes',component:ClassesComponent}
     ]
   }
   

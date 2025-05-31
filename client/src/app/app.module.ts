@@ -1,6 +1,7 @@
 import { APP_INITIALIZER, NgModule } from '@angular/core';
 
 import { BrowserModule } from '@angular/platform-browser';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -24,6 +25,8 @@ import { CommonModule } from '@angular/common';
 import { ProjectsComponent } from './pages/projects/projects.component';
 import { FormsModule } from '@angular/forms';
 import { ProjectDetailsComponent } from './pages/project-details/project-details.component';
+import { ActivatedRoute, RouterModule } from '@angular/router';
+import { ClassesComponent } from './pages/classes/classes.component';
 
 @NgModule({
   declarations: [
@@ -40,12 +43,16 @@ import { ProjectDetailsComponent } from './pages/project-details/project-details
     GradingComponent,
     ProjectsComponent,
     ProjectDetailsComponent,
-
-
+    ClassesComponent
   ],
   imports: [
+    BrowserAnimationsModule,
     FormsModule,
     BrowserModule,
+    RouterModule.forRoot([
+      { path: "project/:id", component: ProjectDetailsComponent },
+      { path: "", redirectTo: "/projects", pathMatch: "full" },
+    ]),
     KeycloakAngularModule,
     AppRoutingModule,
     HttpClientModule,

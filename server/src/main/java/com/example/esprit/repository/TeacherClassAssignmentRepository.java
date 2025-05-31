@@ -5,8 +5,6 @@ import org.springframework.stereotype.Repository;
 
 import com.example.esprit.model.TeacherClassAssignment;
 
-import java.util.List;
-import java.util.Optional;
 
 @Repository
 public interface TeacherClassAssignmentRepository extends JpaRepository<TeacherClassAssignment, Long> {
