@@ -1,0 +1,144 @@
+<div class="project-container">
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <h3>Classes</h3>
+    </div>
+
+    <div class="empty-state" *ngIf="!projectData?.associatedClasses?.length">
+      <p>No classes exist for this project.</p>
+      <button class="btn btn-primary" (click)="addClass()">
+        <i class="fas fa-plus"></i> Add Class
+      </button>
+    </div>
+
+    <ul class="class-list" *ngIf="projectData?.associatedClasses?.length">
+      <li *ngFor="let classItem of projectData.associatedClasses" class="class-item">
+        <div class="class-header" [class.expanded]="expandedClasses.has(classItem.id)" (click)="toggleClass(classItem.id)">
+          <div class="class-name">
+            <i class="fas" [ngClass]="expandedClasses.has(classItem.id) ? 'fa-chevron-down' : 'fa-chevron-right'"></i>
+            <span>{{ classItem.name }}</span>
+          </div>
+          <button class="btn btn-sm btn-outline" (click)="addGroup(classItem.id); $event.stopPropagation()">
+            <i class="fas fa-plus"></i> Group
+          </button>
+        </div>
+
+        <div class="groups-container" *ngIf="expandedClasses.has(classItem.id)" [@expandCollapse]>
+          <div class="empty-state" *ngIf="getGroupsForClass(classItem.id).length === 0">
+            <p>No groups available for this class.</p>
+          </div>
+          
+          <ul class="groups-list">
+            <li *ngFor="let group of getGroupsForClass(classItem.id)" class="group-item">
+              <div class="group-header" [class.expanded]="expandedGroups.has(group.id)" (click)="toggleGroup(group.id)">
+                <div class="group-name">
+                  <i class="fas" [ngClass]="expandedGroups.has(group.id) ? 'fa-chevron-down' : 'fa-chevron-right'"></i>
+                  <span>{{ group.name }}</span>
+                  <span class="member-count">{{ group.memberIds.length }} members</span>
+                </div>
+                <div class="group-actions">
+                  <button class="btn btn-sm btn-icon" (click)="assignTaskToGroup(group.id); $event.stopPropagation()" title="Assign Task">
+                    <i class="fas fa-tasks"></i>
+                  </button>
+                  <button class="btn btn-sm btn-icon" (click)="editGroup(group.id); $event.stopPropagation()" title="Edit Group">
+                    <i class="fas fa-edit"></i>
+                  </button>
+                </div>
+              </div>
+
+              <div class="students-container" *ngIf="expandedGroups.has(group.id)" [@expandCollapse]>
+                <ul class="students-list">
+                  <li *ngFor="let studentId of group.memberIds" class="student-item">
+                    <div class="student-info">
+                      <i class="fas fa-user"></i>
+                      <span>Student ID: {{ studentId }}</span>
+                    </div>
+                    <button class="btn btn-sm btn-outline" (click)="assignTaskToStudent(studentId)">
+                      <i class="fas fa-tasks"></i> Assign Task
+                    </button>
+                  </li>
+                </ul>
+              </div>
+            </li>
+          </ul>
+        </div>
+      </li>
+    </ul>
+  </aside>
+
+  <main class="project-content">
+    <div class="project-header">
+  <h2>Project Details</h2>
+  <button class="btn btn-primary" (click)="openAddTaskModal()">
+    <i class="fas fa-plus"></i> Add Task
+  </button>
+  <div class="status-badge" [ngClass]="getStatusClass()">
+    {{ projectData?.status }}
+  </div>
+</div>
+
+<!-- Add Task Modal -->
+<div class="modal-backdrop" *ngIf="showAddTaskModal" (click)="closeAddTaskModal()"></div>
+<div class="modal" *ngIf="showAddTaskModal">
+  <h3>Add New Task</h3>
+  <form (ngSubmit)="submitAddTask()" #taskForm="ngForm">
+    <div class="form-group">
+      <label for="title">Title</label>
+      <input id="title" name="title" required [(ngModel)]="newTask.title" />
+    </div>
+    <div class="form-group">
+      <label for="description">Description</label>
+      <textarea id="description" name="description" [(ngModel)]="newTask.description"></textarea>
+    </div>
+    <div class="form-group">
+      <label for="dueDate">Due Date</label>
+      <input id="dueDate" name="dueDate" type="date" required [(ngModel)]="newTask.dueDate" />
+    </div>
+    <div class="form-group">
+      <label for="groupIds">Group IDs (comma separated)</label>
+      <input id="groupIds" name="groupIds" [(ngModel)]="newTask.groupIdsInput" placeholder="e.g. 10,11" />
+    </div>
+    <button type="submit" [disabled]="taskForm.invalid">Create Task</button>
+    <button type="button" (click)="closeAddTaskModal()">Cancel</button>
+  </form>
+</div>
+
+    <div class="project-header">
+      <h2>Project Details</h2>
+      <div class="status-badge" [ngClass]="getStatusClass()">
+        {{ projectData?.status }}
+      </div>
+    </div>
+    
+    <div class="project-info-card">
+      <div class="info-row">
+        <div class="info-label">ID</div>
+        <div class="info-value">{{ projectData?.id || 'N/A' }}</div>
+      </div>
+      <div class="info-row">
+        <div class="info-label">Name</div>
+        <div class="info-value">{{ projectData?.name || 'N/A' }}</div>
+      </div>
+      <div class="info-row">
+        <div class="info-label">Description</div>
+        <div class="info-value description">{{ projectData?.description || 'No description provided' }}</div>
+      </div>
+      <div class="info-grid">
+        <div class="info-col">
+          <div class="info-label">Created Date</div>
+          <div class="info-value">  {{ projectData?.createdDate ? (projectData.createdDate | date:'medium') : 'N/A' }}
+</div>
+        </div>
+        <div class="info-col">
+          <div class="info-label">Due Date</div>
+          <div class="info-value">  {{ projectData?.dueDate ? (projectData.dueDate | date:'medium') : 'N/A' }}
+</div>
+        </div>
+      </div>
+      <div class="info-row">
+        <div class="info-label">Created By</div>
+        <div class="info-value">{{ projectData?.createdBy || 'N/A' }}</div>
+      </div>
+    </div>
+  </main>
+</div>

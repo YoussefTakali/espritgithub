@@ -1,4 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { ActivityComponent } from 'src/app/components/activity/activity.component';
+import { GradingComponent } from 'src/app/components/grading/grading.component';
+import { ProgressComponent } from 'src/app/components/progress/progress.component';
+import { SubmissionsComponent } from 'src/app/components/submissions/submissions.component';
 import { SidebarService } from 'src/app/services/sidebar.service';
 
 @Component({
@@ -13,6 +17,26 @@ export class DashboardComponent implements OnInit {
     { title: 'Class Average', value: '87%', description: 'Last 5 assignments', logo: 'assets/graduation-cap-svgrepo-com.png' },
     { title: 'Upcoming Deadlines', value: '5', description: 'Next 7 days', logo: 'assets/calendar-days-svgrepo-com.png' }
   ];
+@ViewChild(ActivityComponent) activityComp!: ActivityComponent;
+@ViewChild(SubmissionsComponent) submissionsComp!: SubmissionsComponent;
+@ViewChild(ProgressComponent) progressComp!: ProgressComponent;
+@ViewChild(GradingComponent) gradingComp!: GradingComponent;
+onSearch() {
+  switch (this.selectedTab) {
+    // case 'activity':
+    //   this.activityComp?.filter(this.searchQuery);
+    //   break;
+    // case 'submissions':
+    //   this.submissionsComp?.filter(this.searchQuery);
+    //   break;
+    // case 'progress':
+    //   this.progressComp?.filter(this.searchQuery);
+    //   break;
+    case 'grading':
+      this.gradingComp?.filter(this.searchQuery);
+      break;
+  }
+}
 
   currentTime: string = '';
   currentDate: string = '';
@@ -52,4 +76,5 @@ export class DashboardComponent implements OnInit {
   changeTab(tab: string): void {
     this.selectedTab = tab;
   }
+
 }

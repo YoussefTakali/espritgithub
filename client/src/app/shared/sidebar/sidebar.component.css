@@ -2,7 +2,7 @@
 .s-container {
   height: 92.808vh;
   width: 311px;
-  z-index: -1; /* Higher z-index to ensure it's above other elements */
+  /* z-index: -1; Higher z-index to ensure it's above other elements */
   background-color: white;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15); /* Softer, more modern shadow */
   position: fixed;

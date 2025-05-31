@@ -1,5 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
+import { Submission } from 'src/app/models/Submission';
 import { SidebarService } from 'src/app/services/sidebar.service';
 
 @Component({
@@ -10,6 +11,12 @@ import { SidebarService } from 'src/app/services/sidebar.service';
 export class GradingComponent implements OnInit,OnDestroy {
   sidebarVisible: boolean = false;
   private sidebarSub!: Subscription;
+  filteredData : Submission[]= []
+filter(query: string) {
+  this.filteredData = this.submissions.filter(item =>
+    item.title.toLowerCase().includes(query.toLowerCase())
+  );
+}
 
   constructor(private sidebarService: SidebarService) {}
 
@@ -26,9 +33,9 @@ export class GradingComponent implements OnInit,OnDestroy {
     }
   }
 
-  submissions = [
+  submissions:Submission[] = [
     {
-      title: 'Database Design',
+      title: 'Youssef',
       description: 'Submitted optimized schema with documentation',
       author: 'Jamie Smith',
       time: '3 days ago',
@@ -62,7 +69,7 @@ export class GradingComponent implements OnInit,OnDestroy {
 
     },
     {
-      title: 'Database Design',
+      title: 'Youssef',
       description: 'Submitted optimized schema with documentation',
       author: 'Jamie Smith',
       time: '3 days ago',

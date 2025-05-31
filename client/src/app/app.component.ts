@@ -15,26 +15,23 @@ export class AppComponent implements OnInit {
   async ngOnInit() {
     try {
       const token = await this.keycloakService.getToken();
-      const userRoles = await this.keycloakService.getUserRoles();
-       const profile = await this.keycloakService.loadUserProfile();
+      localStorage.setItem('token', token);
+
+      const profile = await this.keycloakService.loadUserProfile();
       const email = profile.email;
+      const firstname = profile.firstName;
+      const lastname = profile.lastName;
+      const userid =profile.id
       const attributes: any = (profile as any).attributes;
       const githubUsername = attributes?.githubUsername?.[0];
       const githubToken = attributes?.githubToken?.[0];
-      const image = attributes?.image;
-      localStorage.setItem('token', token);
-      localStorage.setItem('userRoles', userRoles.toString());
-
-     
-
-    
-
+      localStorage.setItem('firstname', firstname!);
+      localStorage.setItem('lastname', lastname!);
+      localStorage.setItem('id',userid!); 
       if (email) {
         localStorage.setItem('email', email);
       }
-if(image){
-          localStorage.setItem('image', image);
-}
+
       if (githubUsername && githubToken) {
         localStorage.setItem('githubUsername', githubUsername);
         localStorage.setItem('githubToken', githubToken);

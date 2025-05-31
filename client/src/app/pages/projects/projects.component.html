@@ -1,0 +1,116 @@
+<!-- Page Header -->
+<div class="header-section">
+  <h1>Your Projects</h1>
+</div>
+
+<!-- Filter Bar -->
+<div class="filter-bar">
+  <input
+    type="text"
+    [(ngModel)]="searchTerm"
+    (ngModelChange)="applyFilters()"
+    placeholder="Search by title or class..."
+    class="search-input"
+  />
+
+  <select
+    [(ngModel)]="statusFilter"
+    (ngModelChange)="applyFilters()"
+    class="status-filter"
+  >
+    <option value="">All Statuses</option>
+    <option value="ACTIVE">Active</option>
+    <option value="COMPLETED">Completed</option>
+  </select>
+</div>
+
+<!-- Add Project Button -->
+<div class="add-project-container">
+  <button class="add-project-btn" (click)="openAddProjectModal()">+ Add Project</button>
+</div>
+
+<!-- Project Cards -->
+<div class="projects-container">
+  <div class="project-card" *ngFor="let project of filteredProjects">
+    <div class="card-header">
+      <span class="date">{{ project.date }}</span>
+      <i class="fas fa-ellipsis-v options-icon"></i>
+    </div>
+
+    <div class="card-body">
+      <h3>{{ project.title }}</h3>
+      <p class="subtitle">{{ project.subtitle }}</p>
+
+      <div class="progress-section">
+        <label>Progress</label>
+        <div class="progress-bar">
+          <div
+            class="progress-fill"
+            [style.width.%]="project.progress"
+          ></div>
+        </div>
+        <div class="progress-value">{{ project.progress }}%</div>
+      </div>
+        <button (click)="goToProjectDetails(project.id)">View Details</button>
+    </div>
+
+    <div class="card-footer">
+      <div class="avatars">
+        <img
+          *ngFor="let user of project.users"
+          [src]="user"
+          class="avatar"
+        />
+        <div class="add-user">+</div>
+      </div>
+      <div class="days-left">{{ project.remainingDays }} Days Left</div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal -->
+<div class="modal-backdrop" *ngIf="showAddModal">
+  <div class="modal">
+    <h2>Create New Project</h2>
+
+    <form (ngSubmit)="submitNewProject()" #projectForm="ngForm">
+      <label>Title</label>
+      <input type="text" [(ngModel)]="newProject.name" name="name" required />
+
+      <label>Description</label>
+      <textarea [(ngModel)]="newProject.description" name="description" required></textarea>
+
+      <label>Due Date</label>
+      <input type="date" [(ngModel)]="newProject.dueDate" name="dueDate" required />
+
+      <label>Due Time</label>
+      <input type="time" [(ngModel)]="newProject.dueTime" name="dueTime" required />
+
+      <label>Status</label>
+      <select [(ngModel)]="newProject.status" name="status">
+        <option value="ACTIVE">Active</option>
+        <option value="COMPLETED">Completed</option>
+      </select>
+
+      <!-- Updated Class Selection (Multiple) -->
+      <label>Associated Classes</label>
+      <div class="class-checkboxes">
+        <div *ngFor="let classOption of classOptions" class="checkbox-item">
+          <input
+            type="checkbox"
+            [id]="'class-' + classOption.id"
+            [value]="classOption.id"
+            (change)="onClassSelectionChange($event, classOption)"
+            [checked]="selectedClasses.includes(classOption.id)"
+          />
+          <label [for]="'class-' + classOption.id">{{ classOption.name }}</label>
+        </div>
+      </div>
+
+      <div class="modal-actions">
+        <button type="submit">Create</button>
+        <button type="button" (click)="closeAddProjectModal()">Cancel</button>
+      </div>
+    </form>
+  </div>
+</div>
