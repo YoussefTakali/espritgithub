@@ -19,8 +19,8 @@ import { GradingComponent } from './components/grading/grading.component';
 import { initializeKeycloak } from './keycloak/app.init';
 import { KeycloakAngularModule, KeycloakBearerInterceptor, KeycloakService } from 'keycloak-angular';
 import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
-import { NoNavbarLayoutComponent } from './components/layout/no-navbar-layout/no-navbar-layout.component';
 import { GithubTokenInterceptor } from './keycloak/GithubTokenInterceptor';
+import { GestionUserComponent } from './components/gestion-user/gestion-user.component';
 
 @NgModule({
   declarations: [
@@ -35,7 +35,7 @@ import { GithubTokenInterceptor } from './keycloak/GithubTokenInterceptor';
     SubmissionsComponent,
     ProgressComponent,
     GradingComponent,
-    NoNavbarLayoutComponent,
+    GestionUserComponent,
 
   ],
   imports: [
