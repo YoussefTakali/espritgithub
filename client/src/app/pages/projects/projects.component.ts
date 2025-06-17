@@ -42,6 +42,12 @@ export class ProjectsComponent implements OnInit {
     this.loadClasses();
   }
 
+  getProgressClass(progress: number): string {
+    if (progress < 50) return 'progress-low';
+    if (progress < 80) return 'progress-medium';
+    return 'progress-high';
+  }
+
   fetchProjects() {
     this.projectService.getProjectsByTeacher().subscribe({
       next: (backendProjects) => {
@@ -138,31 +144,32 @@ export class ProjectsComponent implements OnInit {
     }
   }
 
-  submitNewProject() {
-    const createdById = localStorage.getItem('id') || '';
-    const combinedDateTime = this.combineDateAndTime(this.newProject.dueDate, this.newProject.dueTime);
+submitNewProject() {
+  const createdById = localStorage.getItem('id') || '';
+  const combinedDateTime = this.combineDateAndTime(this.newProject.dueDate, this.newProject.dueTime);
 
-    const projectPayload = {
-      name: this.newProject.name,
-      description: this.newProject.description,
-      createdDate: new Date().toISOString(),
-      dueDate: combinedDateTime,
-      status: this.newProject.status,
-      createdBy: createdById,
-      associatedClasses: this.selectedClasses.map(id => ({ id })) // Map to array of class objects
-    };
+  const projectPayload = {
+    name: this.newProject.name,
+    description: this.newProject.description,
+    createdDate: new Date().toISOString(),
+    dueDate: combinedDateTime,
+    status: this.newProject.status,
+    createdBy: createdById,
+    associatedClasses: this.selectedClasses.map(id => ({ id }))
+  };
 
-    this.projectService.createProject(projectPayload).subscribe({
-      next: (response) => {
-        console.log('Project created:', response);
-        this.closeAddProjectModal();
-        this.fetchProjects();
-      },
-      error: (error) => {
-        console.error('Create project error:', error);
-      }
-    });
-  }
+  this.projectService.createProject(projectPayload).subscribe({
+    next: (response) => {
+      console.log('Project created:', response);
+      this.closeAddProjectModal();  // closes modal & resets form
+      this.fetchProjects();          // reload projects list with new project
+    },
+    error: (error) => {
+      console.error('Create project error:', error);
+    }
+  });
+}
+
   goToProjectDetails(projectId: string) {
     this.router.navigate(['/project-details', projectId]);
   }

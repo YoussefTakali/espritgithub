@@ -23,13 +23,27 @@ import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { GithubTokenInterceptor } from './keycloak/GithubTokenInterceptor';
 import { CommonModule } from '@angular/common';
 import { ProjectsComponent } from './pages/projects/projects.component';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ProjectDetailsComponent } from './pages/project-details/project-details.component';
-import { ActivatedRoute, RouterModule } from '@angular/router';
 import { ClassesComponent } from './pages/classes/classes.component';
+import { SubmissionComponent } from './pages/submissions/submission.component';
+import { SubmissionDetailsComponent } from './pages/submission-details/submission-details.component';
+import { DashboardsubmissionsComponent } from './components/dashboardsubmissions/dashboardsubmissions.component';
+import { SidebarStudentComponent } from './student/sidebar-student/sidebar-student.component';
+import { TaskListComponent } from './student/task-list/task-list.component';
+import { TaskDetailComponent } from './student/task-detail/task-detail.component';
+import { SubmissionInterfaceComponent } from './student/submission-interface/submission-interface.component';
+import { SubmitComponent } from './student/submit/submit.component';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { ConfirmationDialogComponent } from './confirmation-dialog/confirmation-dialog.component';
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { MatIconModule } from '@angular/material/icon';
+import { SafeHtmlPipe } from './pipes/SafeHtmlPipe';
 
 @NgModule({
   declarations: [
+    SafeHtmlPipe,
     AppComponent,
     MainLayoutComponent,
     NavbarComponent,
@@ -39,33 +53,41 @@ import { ClassesComponent } from './pages/classes/classes.component';
     StarcardComponent,
     ActivityComponent,
     SubmissionsComponent,
+    SubmissionComponent,
     ProgressComponent,
     GradingComponent,
     ProjectsComponent,
     ProjectDetailsComponent,
-    ClassesComponent
+    ClassesComponent,
+    SubmissionDetailsComponent,
+    DashboardsubmissionsComponent,
+    SidebarStudentComponent,
+    TaskListComponent,
+    TaskDetailComponent,
+    SubmissionInterfaceComponent,
+    SubmitComponent,
+    ConfirmationDialogComponent
   ],
   imports: [
+    MatIconModule,
+    MatProgressBarModule,
+    MatDialogModule,
+    MatSnackBarModule,
+    BrowserModule,
     BrowserAnimationsModule,
     FormsModule,
-    BrowserModule,
-    RouterModule.forRoot([
-      { path: "project/:id", component: ProjectDetailsComponent },
-      { path: "", redirectTo: "/projects", pathMatch: "full" },
-    ]),
-    KeycloakAngularModule,
-    AppRoutingModule,
+    ReactiveFormsModule,
     HttpClientModule,
     CommonModule,
-    AppRoutingModule,
+    KeycloakAngularModule,
+    AppRoutingModule, // Keep only this one for routing
     LucideAngularModule.pick({ 
       BookOpenText, 
-   //   GitCommit, 
       Calendar, 
       GraduationCap 
     })
   ],
- providers: [
+  providers: [
     {
       provide: APP_INITIALIZER,
       useFactory: initializeKeycloak,
@@ -83,8 +105,6 @@ import { ClassesComponent } from './pages/classes/classes.component';
       multi: true,
     },
   ],
-  
-
   bootstrap: [AppComponent]
 })
 export class AppModule { }

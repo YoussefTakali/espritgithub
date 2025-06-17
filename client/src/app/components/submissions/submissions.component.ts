@@ -1,6 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { SidebarService } from 'src/app/services/sidebar.service';
+import { SubmissionService, Submission } from 'src/app/services/submission.service';
 
 @Component({
   selector: 'app-submissions',
@@ -10,72 +11,44 @@ import { SidebarService } from 'src/app/services/sidebar.service';
 export class SubmissionsComponent implements OnInit, OnDestroy {
   sidebarVisible: boolean = false;
   private sidebarSub!: Subscription;
+  private submissionSub!: Subscription;
 
-  constructor(private sidebarService: SidebarService) {}
+  submissions: Submission[] = [];
 
-  ngOnInit(): void {
-    this.sidebarSub = this.sidebarService.sidebarVisible$.subscribe((visible:boolean) => {
-      this.sidebarVisible = visible;
-      console.log('Sidebar visibility in SubmissionsComponent:', this.sidebarVisible);
-    });
-  }
+  // example teacherId (you might get this from route params or auth service)
+  teacherId = '61eb987b-d7ea-487d-b42d-9f9e4951af05';
+
+  constructor(
+    private sidebarService: SidebarService,
+    private submissionService: SubmissionService
+  ) {}
+
+ngOnInit(): void {
+  this.sidebarSub = this.sidebarService.sidebarVisible$.subscribe((visible: boolean) => {
+    this.sidebarVisible = visible;
+    console.log('Sidebar visibility in SubmissionsComponent:', this.sidebarVisible);
+  });
+
+  this.submissionSub = this.submissionService.getSubmissionsByTeacher(this.teacherId).subscribe({
+    next: (data) => {
+      const oneWeekAgo = new Date();
+      oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
+
+      this.submissions = data.filter(submission => {
+        const submittedAt = new Date(submission.submittedAt);
+        return submittedAt >= oneWeekAgo;
+      });
+
+      console.log('Submissions from last week:', this.submissions);
+    },
+    error: (error) => {
+      console.error('Failed to load submissions', error);
+    }
+  });
+}
 
   ngOnDestroy(): void {
-    if (this.sidebarSub) {
-      this.sidebarSub.unsubscribe();
-    }
+    if (this.sidebarSub) this.sidebarSub.unsubscribe();
+    if (this.submissionSub) this.submissionSub.unsubscribe();
   }
-
-  submissions = [
-    {
-      title: 'Machine Learning Basics',
-      description: 'Submitted final project with 95% accuracy',
-      author: 'Alex Johnson',
-      authorpp: 'download.jpg',
-      time: '2 hours ago',
-      iconType: 'green',
-      type: 'ml',
-      grade: 'D+'
-    },
-    {
-      title: 'Web Development Project',
-      description: 'Updated responsive layout based on feedback',
-      author: 'Sarah Lee',
-      authorpp: 'aaa.jpg',
-      time: 'Yesterday',
-      iconType: 'purple',
-      type: 'dev',
-      grade: 'A-'
-    },
-    {
-      title: 'Data Visualization',
-      description: 'Submitted interactive dashboard with 3 chart types',
-      author: 'Michael Torres',
-      authorpp: 'bbb.webp',
-      time: '2 days ago',
-      iconType: 'green',
-      type: 'data',
-      grade: 'B+'
-    },
-    {
-      title: 'Mobile App Prototype',
-      description: 'Asked for clarification on requirements',
-      author: 'Jamie Smith',
-      authorpp: '',
-      time: '3 days ago',
-      iconType: 'blue',
-      type: 'data',
-      grade: 'C-'
-    },
-    {
-      title: 'Database Design',
-      description: 'Submitted optimized schema with documentation',
-      author: 'Jamie Smith',
-      authorpp: '',
-      time: '3 days ago',
-      iconType: 'green',
-      type: 'data',
-      grade: null
-    }
-  ];
 }

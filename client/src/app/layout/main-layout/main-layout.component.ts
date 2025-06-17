@@ -10,6 +10,7 @@ export class MainLayoutComponent implements OnInit {
   isSidebarVisible = false;
   currentTime: string = '';
   currentDate: string = '';
+  isDashboardRoute: boolean = false;
   constructor(private sidebarService: SidebarService) {}
   username: string = localStorage.getItem('firstname') + ' ' + localStorage.getItem('lastname');
   onSidebarToggle(isVisible: boolean) {
@@ -32,7 +33,11 @@ export class MainLayoutComponent implements OnInit {
       minute: '2-digit'
     });
   }
+    private checkRoute(url: string) {
+    this.isDashboardRoute = url === '/dashboard';
+  }
   ngOnInit(): void {
     this.updateDateTime();
+    this.checkRoute(window.location.pathname);
   }
 }

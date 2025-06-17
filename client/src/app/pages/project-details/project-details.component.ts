@@ -1,12 +1,13 @@
 import { Component, type OnInit } from "@angular/core"
 import { trigger, style, transition, animate } from "@angular/animations"
 import { ProjectserviceService } from "src/app/services/projectservice.service"
-import { ActivatedRoute } from "@angular/router"
+import { ActivatedRoute, Router } from "@angular/router"
+import { MatSnackBar } from "@angular/material/snack-bar"
 
 @Component({
   selector: "app-project-details",
   templateUrl: "./project-details.component.html",
-  styleUrls: ["./project-details.component.scss"],
+  styleUrls: ["./project-details.component.css"],
   animations: [
     trigger("expandCollapse", [
       transition(":enter", [
@@ -23,16 +24,153 @@ import { ActivatedRoute } from "@angular/router"
 export class ProjectDetailsComponent implements OnInit {
   projectId!: number
   projectData: any
+showEditProjectModal = false;
+onCollaboratorsChange(event: Event) {
+  const input = event.target as HTMLInputElement;
+  this.editProjectData.collaborators = input.value ? input.value.split(',') : [];
+}
+allCollaborators = [
+  { id: 'c1', name: 'Alice Johnson' },
+  { id: 'c2', name: 'Bob Smith' },
+  { id: 'c3', name: 'Carol Williams' },
+  { id: 'c4', name: 'David Brown' },
+  { id: 'c5', name: 'Eva Green' },
+];
+onCollaboratorCheckboxChange(event: Event, collaboratorId: string) {
+  const checked = (event.target as HTMLInputElement).checked;
 
+  if (checked) {
+    if (!this.editProjectData.collaborators.includes(collaboratorId)) {
+      this.editProjectData.collaborators.push(collaboratorId);
+    }
+  } else {
+    this.editProjectData.collaborators = this.editProjectData.collaborators.filter(id => id !== collaboratorId);
+  }
+}
+
+editProjectData: {
+  name: string;
+  description: string;
+  dueDate: string;
+  associatedClasses: any[];
+  collaborators: string[];
+} = {
+  name: '',
+  description: '',
+  dueDate: '',
+  associatedClasses: [],
+  collaborators: [],
+};
   expandedClasses: Set<number> = new Set()
   expandedGroups: Set<number> = new Set()
+editProject() {
+  if (!this.projectData) return;
 
+  this.editProjectData = {
+    name: this.projectData.name || '',
+    description: this.projectData.description || '',
+    dueDate: this.projectData.dueDate?.split('T')[0] || '', // input[type="date"]
+    associatedClasses: [...(this.projectData.classes || [])],
+    collaborators: this.projectData.collaborators?.map((c: any) => c.id) || [],
+  };
+
+  this.showEditProjectModal = true;
+}
+submitProjectEdit() {
+  const updatedProject = {
+    name: this.editProjectData.name,
+    description: this.editProjectData.description,
+    dueDate: new Date(this.editProjectData.dueDate).toISOString(),
+    associatedClasses: this.editProjectData.associatedClasses.map(cls => ({
+      id: cls.id,
+      name: cls.name
+    })),
+    collaborators: this.editProjectData.collaborators
+  };
+
+  this.projectService.updateProject(this.projectId, updatedProject).subscribe({
+    next: (updated) => {
+      console.log("Project updated:", updated);
+      this.projectData = updated;
+      this.showEditProjectModal = false;
+      this.showMessage("Project updated successfully");
+    },
+    error: (err) => {
+      console.error("Error updating project:", err);
+    }
+  });
+}
+     getDaysRemaining(): number {
+      return 14;
+     }
+     getTotalMembers(): number {
+      return 0;
+     }
+     getCompletionPercentage(): number {
+      return 0; // Example percentage
+     }
+     getProgressClass(xx :number): string {
+      const percentage = this.getCompletionPercentage();
+      if (percentage >= 75) { return "progress-high"; }
+      if (percentage >= 50) { return "progress-medium"; }
+      return "progress-low";
+    }
+deleteProject() {
+  if (!this.projectData?.id) {
+    console.error('No project ID to delete');
+    return;
+  }
+
+  this.projectService.deleteProject(this.projectData.id).subscribe({
+    next: () => {
+      console.log('Project deleted successfully');
+      this.router.navigate(['/projects']);
+      this.showMessage("Project deleted successfully");
+
+    },
+    error: (err) => {
+      console.error('Error deleting project:', err);
+    }
+  });
+}
+    removeClass(classId: number) {
+      console.log("Remove Class clicked for class", classId)
+    }
+    getStudentsForClass(classId: number): any[] {
+      if (!this.projectData?.classes) return []
+      return this.projectData.classes
+        .find((c: any) => c.id === classId)
+        ?.students || []
+    }
+    viewClassDetails(classId: number) {
+      console.log("View Class Details clicked for class", classId)
+    }
+    addTeamMember(){}
+    removeMember(memberId: string) {    }
+    isOverdue(): boolean {
+      // Placeholder logic for overdue status
+      const dueDate = new Date(this.projectData?.dueDate);
+      const today = new Date();
+      return dueDate < today;
+    }
+editClass(classId: number) {
+    console.log("Edit Class clicked for class", classId)
+  }
   constructor(
     private route: ActivatedRoute,
     private projectService: ProjectserviceService,
+    private snackBar: MatSnackBar, // Assuming you want to show messagess
+    private router: Router // Assuming you want to navigate after deletion
   ) {}
-
+  showMessage(message: string) {
+    this.snackBar.open(message, 'Close', {
+      duration: 3000,  // popup duration in ms
+      horizontalPosition: 'center',  // optional
+      verticalPosition: 'bottom',      // optional
+    });
+  }
   ngOnInit(): void {
+    this.showMessage("Loading project details...")
     this.projectId = Number(this.route.snapshot.paramMap.get("id"))
     this.projectService.getProjectById(this.projectId).subscribe({
       next: (data) => {
@@ -164,4 +302,17 @@ export class ProjectDetailsComponent implements OnInit {
       }
     });
   }
+  showDeleteConfirmModal = false;
+  openDeleteConfirmModal() {
+  this.showDeleteConfirmModal = true;
+}
+
+closeDeleteConfirmModal() {
+  this.showDeleteConfirmModal = false;
+}
+
+confirmDeleteProject() {
+  this.deleteProject();
+  this.closeDeleteConfirmModal();
+}
 }

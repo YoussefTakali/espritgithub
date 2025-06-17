@@ -1,14 +1,28 @@
-import { Component, Input, OnChanges } from '@angular/core';
+import { Component, Input, OnChanges, SimpleChanges, OnInit } from '@angular/core';
 
 @Component({
   selector: 'app-sidebar',
   templateUrl: './sidebar.component.html',
   styleUrls: ['./sidebar.component.css']
 })
-export class SidebarComponent implements OnChanges {
+export class SidebarComponent implements OnChanges, OnInit {
   @Input() isSidebarVisible: boolean = false;
 
-  ngOnChanges() {
-    console.log('Sidebar visibility in SidebarComponent:', this.isSidebarVisible);
+  userRole: string | null = null;
+  userId: string | null = null;
+
+  ngOnInit(): void {
+    // Fetch userRole and userId from localStorage on component initialization
+    this.userRole = localStorage.getItem('role');
+    this.userId = localStorage.getItem('id');
+
+    console.log('User Role:', this.userRole);
+    console.log('User ID:', this.userId);
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['isSidebarVisible']) {
+      console.log('Sidebar visibility changed:', this.isSidebarVisible);
+    }
   }
 }
