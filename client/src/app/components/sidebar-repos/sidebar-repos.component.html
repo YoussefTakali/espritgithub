@@ -1,0 +1,31 @@
+<div class="sidebar-repos-container">
+  <div class="sidebar-repos-header">
+    <h3>Repositories</h3>
+    <div class="search-icon">
+      <i class="fas fa-search"></i>
+    </div>
+  </div>
+
+  <div class="loading-indicator" *ngIf="isLoading">
+    <i class="fas fa-spinner fa-spin"></i> Loading repositories...
+  </div>
+
+  <ul class="repo-list" *ngIf="!isLoading">
+    <li *ngFor="let repo of visibleRepos" class="repo-item" (click)="navigateToRepo(repo.fullName)">
+      <div class="repo-icon">
+        <i class="fas fa-code-branch"></i>
+      </div>
+      <div class="repo-name">{{ repo.fullName }}</div>
+    </li>
+
+    <li *ngIf="repositories.length === 0" class="empty-message">
+      No repositories found
+    </li>
+  </ul>
+
+  <div class="show-more-container" *ngIf="repositories.length > maxVisibleRepos && !showAllRepos">
+    <button class="show-more-button" (click)="toggleShowAll()">
+      Show more
+    </button>
+  </div>
+</div>

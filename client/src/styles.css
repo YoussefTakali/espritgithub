@@ -1,0 +1,116 @@
+/* You can add global styles to this file, and also import other style files */
+@import './variables.css';
+
+html, body { height: 100%; }
+body {
+  margin: 0;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+  color: var(--esprit-text-dark);
+  background-color: var(--esprit-background-light);
+}
+
+/* Styles globaux */
+h1, h2, h3, h4, h5, h6 {
+  color: var(--esprit-black);
+}
+
+a {
+  color: var(--esprit-red);
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+a:hover {
+  color: var(--esprit-hover-red);
+}
+
+/* Styles pour les boutons */
+.btn {
+  border-radius: 4px;
+  padding: 8px 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.btn-primary {
+  background-color: var(--esprit-red);
+  color: white;
+  border: none;
+}
+
+.btn-primary:hover {
+  background-color: var(--esprit-hover-red);
+}
+
+.btn-primary:active {
+  background-color: var(--esprit-active-red);
+}
+
+.btn-secondary {
+  background-color: white;
+  color: var(--esprit-red);
+  border: 1px solid var(--esprit-red);
+}
+
+.btn-secondary:hover {
+  background-color: var(--esprit-very-light-red);
+}
+
+/* Badges et étiquettes */
+.badge {
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.badge-public {
+  background-color: var(--esprit-red);
+  color: white;
+}
+
+.badge-private {
+  background-color: var(--esprit-gray);
+  color: var(--esprit-text-dark);
+}
+
+/* Styles pour les cartes */
+.card {
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  background-color: white;
+  transition: box-shadow 0.3s ease;
+}
+
+.card:hover {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.card-header {
+  border-bottom: 2px solid var(--esprit-red);
+  padding: 16px;
+}
+
+/* Styles pour les tableaux */
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th {
+  background-color: var(--esprit-background-gray);
+  color: var(--esprit-text-dark);
+  font-weight: 600;
+  text-align: left;
+  padding: 12px 16px;
+}
+
+td {
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--esprit-gray);
+}
+
+tr:hover {
+  background-color: var(--esprit-background-light-red);
+}

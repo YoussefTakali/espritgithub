@@ -1,0 +1,47 @@
+<!-- Sidebar Container -->
+<div class="s-container" [class.visible]="isVisible">
+  <!-- Debug info -->
+  <div style="background: yellow; padding: 5px; font-size: 12px;">
+    Debug: isVisible = {{ isVisible }}, navItems = {{ navItems?.length }}
+  </div>
+
+  <!-- Header with Close Button -->
+  <div class="s-header">
+    <span style="flex: 1; font-weight: bold;">Navigation</span>
+    <button class="close-btn" (click)="closeSidebar()">
+      <i class="fa fa-times"></i>
+      <!-- Fallback if FontAwesome not loaded -->
+      <span style="font-size: 16px;">✕</span>
+    </button>
+  </div>
+
+  <!-- Navigation Links -->
+  <ul>
+    <li *ngFor="let item of navItems; let i = index">
+      <a class="s-link" 
+         [class.active]="item.isActive"
+         (click)="navigate(item.route)">
+        <div class="s-icon-container">
+          <!-- Custom Home Icon -->
+          <img *ngIf="item.title === 'Home'" 
+               src="assets/Media.png" 
+               alt="Home Icon" 
+               class="s-icon custom-image-icon" 
+               width="20" 
+               height="20">
+          
+          <!-- Custom Repos Icon -->
+          <img *ngIf="item.title === 'Go to Repos'" 
+               src="assets/repo.png" 
+               alt="Repository Icon" 
+               class="s-icon custom-image-icon" 
+               width="20" 
+               height="20">
+          
+
+        </div>
+        <span class="s-link-text">{{ item.title }}</span>
+      </a>
+    </li>
+  </ul>
+</div>

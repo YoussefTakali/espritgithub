@@ -1,0 +1,16 @@
+<div class="app-container" [class.sidebar-open]="isSidebarVisible">
+  <app-navbar (sidebarToggled)="onSidebarToggled($event)"></app-navbar>
+  <app-sidebar 
+    [isVisible]="isSidebarVisible" 
+    (visibilityChange)="onSidebarVisibilityChange($event)">
+  </app-sidebar>
+  <div class="main-content-wrapper">
+    <router-outlet></router-outlet>
+  </div>
+  
+  <!-- Mobile backdrop -->
+  <div class="mobile-backdrop" 
+       *ngIf="isSidebarVisible && isMobile" 
+       (click)="closeSidebar()">
+  </div>
+</div>

@@ -1,0 +1,97 @@
+/* Sidebar base styles */
+.s-container {
+  width: 250px;
+  height: 100vh;
+  background-color: #fff;
+  border-right: 1px solid #e1e4e8;
+  transition: transform 0.3s ease;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 1000;
+  transform: translateX(-100%); /* Hidden by default */
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+  overflow-y: auto;
+}
+
+.s-container.visible {
+  transform: translateX(0); /* Visible when class is applied */
+}
+
+/* Navigation styles */
+.s-container ul {
+  list-style: none;
+  padding: 20px 0;
+  margin: 0;
+}
+
+.s-container li {
+  margin: 0;
+}
+
+.s-link {
+  display: flex;
+  align-items: center;
+  padding: 12px 20px;
+  color: #24292e;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: none;
+  background: none;
+  width: 100%;
+  text-align: left;
+}
+
+.s-link:hover {
+  background-color: #f6f8fa;
+  color: #0366d6;
+}
+
+.s-link.active {
+  background-color: #e3f2fd;
+  color: #0366d6;
+  font-weight: 500;
+  border-right: 3px solid #0366d6;
+}
+
+.s-icon-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  margin-right: 12px;
+}
+
+.s-icon {
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
+}
+
+.custom-image-icon {
+  filter: brightness(0.7);
+  transition: filter 0.2s ease;
+}
+
+.s-link:hover .custom-image-icon {
+  filter: brightness(0.5);
+}
+
+.s-link.active .custom-image-icon {
+  filter: brightness(0.3);
+}
+
+.s-link-text {
+  flex: 1;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+/* Mobile styles */
+@media (max-width: 737px) {
+  .s-container {
+    width: 280px;
+  }
+}

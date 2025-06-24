@@ -1,0 +1,25 @@
+:root {
+  /* Palette de couleurs ESPRIT */
+  --esprit-red: #E30613;
+  --esprit-dark-red: #B30000;
+  --esprit-light-red: #FF4D4D;
+  --esprit-very-light-red: #FFEBEB;
+  --esprit-gray: #CCCCCC;
+  --esprit-dark-gray: #333333;
+  --esprit-black: #000000;
+  
+  /* Couleurs d'état */
+  --esprit-hover-red: #FF4D4D;
+  --esprit-active-red: #B30000;
+  --esprit-disabled-gray: #E0E0E0;
+  
+  /* Couleurs de fond */
+  --esprit-background-light: #FFFFFF;
+  --esprit-background-gray: #F5F5F5;
+  --esprit-background-light-red: #FFEBEB;
+  
+  /* Couleurs de texte */
+  --esprit-text-dark: #333333;
+  --esprit-text-light: #FFFFFF;
+  --esprit-text-gray: #666666;
+}
