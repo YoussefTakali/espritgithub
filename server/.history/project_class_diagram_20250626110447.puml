@@ -1,0 +1,273 @@
+@startuml EspritProjectClassDiagram
+
+!define ENTITY_COLOR #E1F5FE
+!define DTO_COLOR #FFF3E0
+!define ENUM_COLOR #F3E5F5
+
+' Enums
+enum Specialites <<ENUM_COLOR>> {
+    GL
+    IA
+    DS
+    IOT
+    TRANC_COMMUN
+}
+
+enum TypeFormation <<ENUM_COLOR>> {
+    ALTERNANT
+    COURS_DU_JOUR
+    COURS_DU_SOIR
+}
+
+enum Annee <<ENUM_COLOR>> {
+    PREMIERE_ANNEE
+    DEUXIEME_ANNEE
+    TROISIEME_ANNEE
+    QUATRIEME_ANNEE
+    CINQUIEME_ANNEE
+}
+
+enum AssignmentScope <<ENUM_COLOR>> {
+    INDIVIDUAL
+    GROUP
+}
+
+enum AssignmentStatus <<ENUM_COLOR>> {
+    PENDING
+    SUBMITTED
+    GRADED
+    LATE
+}
+
+enum ProjectStatus <<ENUM_COLOR>> {
+    ACTIVE
+    COMPLETED
+    CANCELLED
+}
+
+enum EnrollmentStatus <<ENUM_COLOR>> {
+    ACTIVE
+    INACTIVE
+    SUSPENDED
+}
+
+' Core School Management Entities
+class Specialite <<ENTITY_COLOR>> {
+    - Long id
+    - String nom
+    - Specialites specialites
+    - TypeFormation typeFormation
+    - List<Niveau> niveaux
+    --
+    + addNiveau(niveau: Niveau)
+    + removeNiveau(niveau: Niveau)
+}
+
+class Niveau <<ENTITY_COLOR>> {
+    - Long id
+    - Annee annee
+    - Specialite specialite
+    - List<Classe> classes
+}
+
+class Classe <<ENTITY_COLOR>> {
+    - Long id
+    - String number
+    - int capacity
+    - Niveau niveau
+    - List<Eleve> eleves
+    - List<Repos> repos
+}
+
+class Eleve <<ENTITY_COLOR>> {
+    - Long id
+    - String nom
+    - String prenom
+    - String email
+    - String numeroEtudiant
+    - String telephone
+    - Classe classe
+    - List<Repos> repos
+}
+
+class Repos <<ENTITY_COLOR>> {
+    - Long id
+    - LocalDateTime dateDebut
+    - LocalDateTime dateFin
+    - String motif
+    - String statut
+    - Eleve eleve
+    - Classe classe
+}
+
+' Task Management Entities (from existing project)
+class Task <<ENTITY_COLOR>> {
+    - Long id
+    - String title
+    - String description
+    - LocalDateTime dueDate
+    - String createdBy
+    - LocalDateTime createdDate
+    - AssignmentStatus status
+    - Project project
+    - boolean isGraded
+    - boolean isVisible
+}
+
+class Project <<ENTITY_COLOR>> {
+    - Long id
+    - String name
+    - String description
+    - LocalDateTime startDate
+    - LocalDateTime endDate
+    - ProjectStatus status
+    - String createdBy
+    - LocalDateTime createdDate
+    - List<Task> tasks
+    - Group group
+}
+
+class Group <<ENTITY_COLOR>> {
+    - Long id
+    - String name
+    - String description
+    - String createdBy
+    - LocalDateTime createdDate
+    - List<StudentClassEnrollment> enrollments
+    - List<Project> projects
+}
+
+class StudentClassEnrollment <<ENTITY_COLOR>> {
+    - Long id
+    - String studentId
+    - Long classId
+    - EnrollmentStatus status
+    - LocalDateTime enrollmentDate
+    - Group group
+}
+
+' GitHub Integration Entities
+class PushedFile <<ENTITY_COLOR>> {
+    - Long id
+    - String repoName
+    - String commitId
+    - String filePath
+    - String folderPath
+    - String fileType
+    - String fileExtension
+    - String branch
+    - String pusherName
+    - String content
+    - LocalDateTime pushedAt
+    - String commitMessage
+}
+
+class RepositoryDescription <<ENTITY_COLOR>> {
+    - Long id
+    - String owner
+    - String repositoryName
+    - String description
+    - LocalDateTime createdAt
+    - LocalDateTime updatedAt
+    - String createdBy
+    - String updatedBy
+}
+
+class RepositoryEntity <<ENTITY_COLOR>> {
+    - Long id
+    - String repoName
+    - String ownerName
+    - Date creationDate
+    - Long classId
+}
+
+class Commit <<ENTITY_COLOR>> {
+    - String sha
+    - String branch
+    - String message
+    - String authorName
+    - String authorLogin
+    - String authorAvatarUrl
+    - String date
+    - String repoName
+    - RepositoryEntity repository
+}
+
+' DTOs
+class TaskDTO <<DTO_COLOR>> {
+    - Long id
+    - String title
+    - String description
+    - LocalDateTime dueDate
+    - String createdBy
+    - LocalDateTime createdDate
+    - AssignmentStatus status
+    - Long projectId
+    - boolean isGraded
+    - boolean isVisible
+}
+
+class TaskRequestDTO <<DTO_COLOR>> {
+    - String title
+    - String description
+    - LocalDateTime dueDate
+    - Long projectId
+    - boolean isGraded
+    - boolean isVisible
+}
+
+class TaskSummaryDTO <<DTO_COLOR>> {
+    - Long id
+    - String title
+    - LocalDateTime dueDate
+    - AssignmentStatus status
+    - String projectName
+}
+
+class CreateRepoRequest <<DTO_COLOR>> {
+    - String name
+    - String description
+    - String ownerName
+    - boolean privateRepo
+    - boolean autoInit
+    - String gitignoreTemplate
+    - Long classId
+}
+
+class AddCollaboratorRequest <<DTO_COLOR>> {
+    - String owner
+    - String repo
+    - String username
+    - String permission
+}
+
+' Relationships - School Management
+Specialite ||--o{ Niveau : "has many"
+Niveau ||--o{ Classe : "has many"
+Classe ||--o{ Eleve : "has many"
+Classe ||--o{ Repos : "has many"
+Eleve ||--o{ Repos : "has many"
+
+' Relationships - Task Management
+Project ||--o{ Task : "contains"
+Group ||--o{ Project : "works on"
+Group ||--o{ StudentClassEnrollment : "has members"
+
+' Relationships - GitHub Integration
+RepositoryEntity ||--o{ Commit : "has commits"
+
+' Enum relationships
+Specialite }--|| Specialites
+Specialite }--|| TypeFormation
+Niveau }--|| Annee
+Task }--|| AssignmentStatus
+Project }--|| ProjectStatus
+StudentClassEnrollment }--|| EnrollmentStatus
+
+' Notes
+note top of Specialite : Core academic structure
+note top of PushedFile : GitHub file tracking
+note top of Task : Task management system
+note right of RepositoryEntity : GitHub repository metadata
+
+@enduml

@@ -1,8 +1,8 @@
 import { Component, type OnInit, Input, HostListener } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
 import { ApiService } from "../services/api.service.service";
-import { GithubTokenService } from "../services/github-token.service";
 import { Router } from "@angular/router";
+import { GithubTokenService } from "../services/github-token.service";
 
 interface Repository {
   id: number;

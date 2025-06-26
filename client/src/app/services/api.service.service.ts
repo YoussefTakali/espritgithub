@@ -8,7 +8,7 @@ import  { Specialty, Level, Class, Repository, Summary } from "../models/special
   providedIn: "root",
 })
 export class ApiService {
-  private readonly API_BASE_URL = "http://localhost:8085/api"
+  private readonly API_BASE_URL = "http://localhost:8080/api"
 
   constructor(private http: HttpClient) {}
 
