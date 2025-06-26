@@ -1,8 +1,6 @@
 package com.example.esprit.controller;
 
 import com.example.esprit.model.Specialite;
-import com.example.esprit.model.Specialites;
-import com.example.esprit.model.TypeFormation;
 import com.example.esprit.service.SpecialiteService;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;

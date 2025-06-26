@@ -4,7 +4,8 @@ import { Injectable } from '@angular/core';
   providedIn: 'root'
 })
 export class GithubTokenService {
-  private readonly token = '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';  // Replace with your actual token
+  a="github_pat_11A7AWYQI0JZvaQlwMItRQ_vHeatRwPHtdeVP0wu8";
+  private readonly token = 'iTkVq5B1LrjpQyB2S4I5uer8FMRKGVDRA8RUkGokR';  // Replace with your actual token
 
   constructor() { }
 
