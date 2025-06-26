@@ -27,7 +27,9 @@ import { FormsModule } from '@angular/forms';
 import { ProjectDetailsComponent } from './pages/project-details/project-details.component';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { ClassesComponent } from './pages/classes/classes.component';
-import { GestionUserComponent } from './components/gestion-user/gestion-user.component';
+import { ListUserComponent } from './components/users/list-user/list-user.component';
+import { AddUserComponent } from './components/users/add-user/add-user.component';
+import { AddGithubInfoComponent } from './components/users/add-github-info/add-github-info.component';
 
 @NgModule({
   declarations: [
@@ -45,7 +47,9 @@ import { GestionUserComponent } from './components/gestion-user/gestion-user.com
         ProjectsComponent,
     ProjectDetailsComponent,
     ClassesComponent,
-    GestionUserComponent
+    ListUserComponent,
+    AddUserComponent,
+    AddGithubInfoComponent
 
   ],
   imports: [
