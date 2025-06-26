@@ -1,0 +1,102 @@
+<div class="readme-container">
+  <!-- Header styled like table header -->
+  <div class="readme-header">
+    <div class="header-left">
+      <i class="fa fa-file-text-o readme-icon"></i>
+      <h3>📝 Repository Description</h3>
+    </div>
+    <div class="header-right" *ngIf="!isEditing">
+      <button class="btn-edit" (click)="startEditing()" [disabled]="isLoading">
+        <i class="fa fa-edit"></i> Edit
+      </button>
+      <button class="btn-delete" (click)="deleteDescription()"
+              [disabled]="isLoading || !description.exists"
+              *ngIf="description.exists">
+        <i class="fa fa-trash"></i> Delete
+      </button>
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  <div class="loading-state" *ngIf="isLoading">
+    <i class="fa fa-spinner fa-spin"></i>
+    <span>Loading description...</span>
+  </div>
+
+  <!-- Error Message -->
+  <div class="error-message" *ngIf="error">
+    <i class="fa fa-exclamation-triangle"></i>
+    {{ error }}
+  </div>
+
+  <!-- Success Message -->
+  <div class="success-message" *ngIf="successMessage">
+    <i class="fa fa-check-circle"></i>
+    {{ successMessage }}
+  </div>
+
+  <!-- Content -->
+  <div class="readme-content" *ngIf="!isLoading">
+
+    <!-- View Mode -->
+    <div class="view-mode" *ngIf="!isEditing">
+      <div class="description-text" *ngIf="description.description && description.description.trim()">
+        <pre>{{ description.description }}</pre>
+      </div>
+      <div class="empty-state" *ngIf="!description.description || !description.description.trim()">
+        <div class="empty-content">
+          <i class="fa fa-file-text-o empty-icon"></i>
+          <h4>No description available</h4>
+          <p>Add a description to help others understand what this repository is about.</p>
+          <button class="btn-add" (click)="startEditing()">
+            <i class="fa fa-plus"></i> Add Description
+          </button>
+        </div>
+      </div>
+
+      <!-- Metadata -->
+      <div class="metadata" *ngIf="description.exists && description.updatedAt">
+        <div class="metadata-item">
+          <span class="label">Last updated:</span>
+          <span class="value">{{ formatDate(description.updatedAt) }}</span>
+        </div>
+        <div class="metadata-item" *ngIf="description.updatedBy">
+          <span class="label">Updated by:</span>
+          <span class="value">{{ description.updatedBy }}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Edit Mode -->
+    <div class="edit-mode" *ngIf="isEditing">
+      <div class="editor-container">
+        <label for="description">Repository Description:</label>
+        <textarea
+          id="description"
+          [(ngModel)]="description.description"
+          placeholder="Enter a description for this repository...&#10;&#10;You can include:&#10;• What this repository contains&#10;• How to use it&#10;• Important notes or instructions&#10;• Links to documentation"
+          rows="12"
+          class="description-editor"
+          [disabled]="isSaving">
+        </textarea>
+
+        <div class="editor-help">
+          <i class="fa fa-info-circle"></i>
+          <span>This description is stored locally and will not be pushed to GitHub.</span>
+        </div>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="action-buttons">
+        <button class="btn-save" (click)="saveDescription()" [disabled]="isSaving">
+          <i class="fa fa-save" *ngIf="!isSaving"></i>
+          <i class="fa fa-spinner fa-spin" *ngIf="isSaving"></i>
+          {{ isSaving ? 'Saving...' : 'Save Description' }}
+        </button>
+        <button class="btn-cancel" (click)="cancelEditing()" [disabled]="isSaving">
+          <i class="fa fa-times"></i> Cancel
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,45 @@
+package com.example.esprit.util;
+
+import com.example.esprit.dto.SubmissionDTO;
+import com.example.esprit.model.Submission;
+import org.springframework.stereotype.Component;
+
+@Component
+public class SubmissionMapper {
+
+public static SubmissionDTO toDTO(Submission submission) {
+    return SubmissionDTO.builder()
+        .id(submission.getId())
+        .content(submission.getContent())
+        .submissionDate(submission.getSubmissionDate())
+        .grade(submission.getGrade())
+        .feedback(submission.getFeedback())
+        .status(submission.getStatus())
+        .submittedBy(submission.getSubmittedBy()) // still just string here
+        .taskId(submission.getTask() != null ? submission.getTask().getId() : null)
+        .scope(submission.getTask() != null ? submission.getTask().getAssignmentScope() : null)  // <--- add this!
+        .gradedBy(submission.getGradedBy())
+        .gradedDate(submission.getGradedDate())
+        .build();
+}
+
+
+    public static Submission toEntity(SubmissionDTO dto) {
+        if (dto == null) return null;
+
+        Submission submission = new Submission();
+        submission.setId(dto.getId());
+        submission.setContent(dto.getContent());
+        submission.setSubmissionDate(dto.getSubmissionDate());
+        submission.setGrade(dto.getGrade());
+        submission.setFeedback(dto.getFeedback());
+        submission.setStatus(dto.getStatus());
+        submission.setSubmittedBy(dto.getSubmittedBy());
+        // Note: You may want to set Task by fetching from DB if taskId is provided
+        // submission.setTask(...);
+        submission.setGradedBy(dto.getGradedBy());
+        submission.setGradedDate(dto.getGradedDate());
+
+        return submission;
+    }
+}
